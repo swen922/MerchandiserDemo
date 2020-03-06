@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">MerchandiserDemo</string>
+
+    <string name="class_desc_format">Формат магазина</string>
+
+    <string name="default_header">Фильтры не назначены</string>
+
+
+
+    <string name="sample_comment">Пример комментария более-менее длинного чтобы имитировать наличие коммента под заголовком</string>
+
+
+
+</resources>
