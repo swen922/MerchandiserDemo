@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@android:color/white"
+    android:background="@color/gray_1"
     android:clickable="false"
     tools:context=".MainActivity">
 
@@ -41,7 +41,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
 
-        app:layout_constraintGuide_percent="0.08"
+        app:layout_constraintGuide_percent="0.095"
         />
 
 
@@ -52,8 +52,10 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
 
-        app:layout_constraintGuide_percent="0.2"
+        app:layout_constraintGuide_percent="0.18"
         />
+
+
 
     <TextView
         android:layout_width="0dp"
@@ -70,8 +72,6 @@
         android:id="@+id/main_comment_back"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:background="@color/gray_2"
-
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -86,6 +86,7 @@
 
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/main_guide_vertical_1"
@@ -103,6 +104,7 @@
 
         android:layout_marginLeft="8dp"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="@id/main_guide_vertical_1"
@@ -139,9 +141,9 @@
     <TextView
         android:id="@+id/main_comment"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
 
-        android:text="@string/sample_comment"
+
 
         android:layout_marginLeft="8dp"
         android:layout_marginTop="4dp"
@@ -149,7 +151,7 @@
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="@id/main_guide_horiz_1"
+        app:layout_constraintTop_toTopOf="@id/main_guide_horiz_4"
         />
 
 
@@ -159,6 +161,7 @@
         android:layout_height="0dp"
 
         android:background="@color/gray_1"
+        android:paddingTop="4dp"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"

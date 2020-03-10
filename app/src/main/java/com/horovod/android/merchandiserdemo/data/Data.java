@@ -12,5 +12,6 @@ public class Data {
 
     public static List<Showable> listStores = new ArrayList<>();
 
+    public static final String photoFolder = "photofolder";
 
 }

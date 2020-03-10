@@ -21,16 +21,19 @@ public class ClassifierFormat implements Classifier {
     }
 
     @Override
-    public String getComment() {
-        return comment;
-    }
-
     public void setName(String name) {
         if (name != null && !name.isEmpty()) {
             this.name = name;
         }
     }
 
+    @Override
+    public String getComment() {
+        return comment;
+    }
+
+
+    @Override
     public void setComment(String comment) {
         if (comment != null && !comment.isEmpty()) {
             this.comment = comment;

@@ -1,14 +1,19 @@
 package com.horovod.android.merchandiserdemo.showable;
 
+import android.util.Log;
+
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class Store implements Showable {
 
-    private String preview;
-    private String name;
+    private String preview = "";
+    private String name = "";
+    private String comment = "";
+    private List<Classifier> classifiers = new ArrayList<>();
 
     public Store(String name) {
         this.name = name;
@@ -16,7 +21,14 @@ public class Store implements Showable {
 
     @Override
     public String getPreview() {
-        return null;
+        return this.preview;
+    }
+
+    @Override
+    public void setPreview(String preview) {
+        if (preview != null) {
+            this.preview = preview;
+        }
     }
 
     @Override
@@ -25,13 +37,27 @@ public class Store implements Showable {
     }
 
     @Override
+    public void setName(String name) {
+        if (name != null) {
+            this.name = name;
+        }
+    }
+
+    @Override
     public String getComment() {
-        return null;
+        return this.comment;
+    }
+
+    @Override
+    public void setComment(String comment) {
+        if (comment != null) {
+            this.comment = comment;
+        }
     }
 
     @Override
     public List<Classifier> getClassifiers() {
-        return null;
+        return this.classifiers;
     }
 
     @Override
@@ -44,11 +70,11 @@ public class Store implements Showable {
         return null;
     }
 
-    public void setPreview(String preview) {
-        this.preview = preview;
+    @Override
+    public void addClassifier(Classifier classifier) {
+        this.classifiers.add(classifier);
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
+
+
 }
