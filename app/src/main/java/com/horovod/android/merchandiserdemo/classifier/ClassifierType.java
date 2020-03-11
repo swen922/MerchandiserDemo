@@ -4,6 +4,7 @@ public enum ClassifierType {
     FORMAT,
     REGION,
     CITY,
+    CITY_SIZE,
     CHAIN,
     BRAND,
     OTHER

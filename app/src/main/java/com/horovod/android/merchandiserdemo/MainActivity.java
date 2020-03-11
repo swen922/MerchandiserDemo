@@ -23,6 +23,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
@@ -56,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (adapter == null) {
-            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, Data.listStores);
+            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, Data.storeKeeper.getShowables());
         }
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -64,35 +65,32 @@ public class MainActivity extends AppCompatActivity {
 
     private void emulateData() {
 
-        //String address = "http://horovod.com/assets/data/_codexp/merchdemo/";
-        String fileName1 = "shop1_step0_b_preview.jpg";
-        String fileName2 = "shop1_step0_b.jpg";
+        Field[] fields = R.raw.class.getFields();
+        for (Field fl : fields) {
+            //Log.i("RAW FILES : : : : : ", "fl = " + fl.getName());
+            copyFileToFolder(Data.photoFolder, fl.getName());
+        }
 
-        copyFileToFolder(Data.photoFolder, fileName1);
-        copyFileToFolder(Data.photoFolder, fileName2);
+        Showable store1 = Store.getInstance(Data.storeKeeper, "Традиция номер один");
 
-        /*File file1 = new File(getFilesDir() + File.separator + Data.photoFolder + File.separator + fileName1);
-        File file2 = new File(getFilesDir() + File.separator + Data.photoFolder + File.separator + fileName2);*/
-
-        Showable store1 = new Store("Store-1");
         store1.setComment("Comment store-1");
-        store1.setPreview("shop1_step0_b_preview.jpg");
-        Classifier classifier = new ClassifierFormat("Традиционный магазин");
-        classifier.setComment("Коммент к классификатору Традиционный магазин");
-        store1.addClassifier(classifier);
-        Data.listStores.add(store1);
-        Showable store2 = new Store("Store-2");
-        //store2.setComment("Comment store-2");
-        Data.listStores.add(store2);
-        Showable store3 = new Store("Store-3");
-        store3.setComment("Comment store-3");
-        Data.listStores.add(store3);
-        Showable store4 = new Store("Store-4");
+        store1.setPreview("shop_trad_1_step0_b_preview.jpg");
+        store1.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
 
-        Data.listStores.add(store4);
-        Showable store5 = new Store("Store-5");
+        Showable store2 = Store.getInstance(Data.storeKeeper,"Традиция номер два");
+        store2.setPreview("shop_trad_1_step0_b_preview.jpg");
+        store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
+
+        Showable store3 = Store.getInstance(Data.storeKeeper, "Мини-маркет первый");
+        store3.setComment("Comment store-3");
+        store3.setPreview("shop_minimarket_1_step3_b_preview.jpg");
+        store3.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_2)));
+
+        Showable store4 = Store.getInstance(Data.storeKeeper, "Store-4");
+
+        Showable store5 = Store.getInstance(Data.storeKeeper, "Store-5");
         store5.setComment("Comment store-5");
-        Data.listStores.add(store5);
+
 
     }
 
@@ -101,6 +99,8 @@ public class MainActivity extends AppCompatActivity {
         HttpURLConnection connection = url.openConnection();
         connection.setRequestMethod("GET");
         connection.connect();*/
+
+        fileName = checkJPGextension(fileName);
 
         File folder = new File(getFilesDir() + File.separator + folderName);
         boolean success = true;
@@ -134,6 +134,16 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
 
+        }
+    }
+
+    private String checkJPGextension(String fileName) {
+        if (fileName.toLowerCase().endsWith(".jpg")) {
+            return fileName;
+        }
+        else {
+            String result = fileName + ".jpg";
+            return result;
         }
     }
 

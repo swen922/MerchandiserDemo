@@ -1,9 +1,22 @@
 <resources>
     <string name="app_name">MerchandiserDemo</string>
 
-    <string name="class_desc_format">Формат магазина</string>
+    <string name="class_desc_format">Формат:</string>
 
     <string name="default_header">Фильтры не назначены</string>
+    <string name="default_preview">Просмотровое фото отсутствует</string>
+    <string name="classifiers_header">Классификаторы:</string>
+
+    <string name="class_format_1">Магазин прилавочного типа</string>
+    <string name="class_format_2">Мини-маркет</string>
+    <string name="class_format_3">Супермаркет</string>
+    <string name="class_format_4">Гипермаркет</string>
+    <string name="class_format_5">Киоск</string>
+    <string name="class_format_6">Открытый рынок</string>
+
+
+
+
 
 
 

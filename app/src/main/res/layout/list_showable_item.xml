@@ -22,7 +22,9 @@
     <ImageView
         android:id="@+id/list_sho_image"
         android:layout_width="0dp"
-        android:layout_height="100dp"
+        android:layout_height="0dp"
+
+        android:scaleType="centerInside"
 
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
@@ -34,13 +36,16 @@
     <TextView
         android:id="@+id/list_sho_header"
         android:layout_width="0dp"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
 
         android:text="@string/default_header"
+        android:textStyle="bold"
         android:textAllCaps="true"
 
         android:paddingLeft="8dp"
-        android:paddingTop="8dp"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:gravity="left|top"
 
         android:maxLines="2"
         android:autoSizeTextType="uniform"

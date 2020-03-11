@@ -17,5 +17,8 @@ public interface Showable {
     public List<Classifier> getClassifiersByType(ClassifierType type);
     public void addClassifier(Classifier classifier);
     public List<Showable> getShowables();
+    public void addShowable(Showable showable);
+    public Showable getParent();
+    public void setParent(Showable parent);
 
 }

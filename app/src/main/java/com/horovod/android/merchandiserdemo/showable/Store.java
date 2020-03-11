@@ -14,9 +14,17 @@ public class Store implements Showable {
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
+    private List<Showable> showables = new ArrayList<>();
+    private Showable parent;
 
-    public Store(String name) {
-        this.name = name;
+    private Store() {
+    }
+
+    public static Store getInstance(Showable parent, String name) {
+        Store store = new Store();
+        store.setName(name);
+        store.setParent(parent);
+        return store;
     }
 
     @Override
@@ -62,19 +70,46 @@ public class Store implements Showable {
 
     @Override
     public List<Classifier> getClassifiersByType(ClassifierType type) {
-        return null;
-    }
-
-    @Override
-    public List<Showable> getShowables() {
-        return null;
+        List<Classifier> result = new ArrayList<>();
+        for (Classifier cl : this.classifiers) {
+            if (cl.getClassifierType() == type) {
+                result.add(cl);
+            }
+        }
+        return result;
     }
 
     @Override
     public void addClassifier(Classifier classifier) {
-        this.classifiers.add(classifier);
+        if (classifier != null) {
+            this.classifiers.add(classifier);
+        }
     }
 
+    @Override
+    public List<Showable> getShowables() {
+        return this.showables;
+    }
 
+    @Override
+    public void addShowable(Showable showable) {
+        if (showable != null) {
+            this.showables.add(showable);
+        }
+    }
 
+    @Override
+    public Showable getParent() {
+        return null;
+    }
+
+    @Override
+    public void setParent(Showable parent) {
+        if (parent != null) {
+            this.parent = parent;
+            if (!this.parent.getShowables().contains(this)) {
+                this.parent.addShowable(this);
+            }
+        }
+    }
 }
