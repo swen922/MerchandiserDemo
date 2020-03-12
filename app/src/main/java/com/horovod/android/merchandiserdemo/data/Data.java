@@ -11,7 +11,7 @@ public class Data {
 
     //public static List<Showable> listStores = new ArrayList<>();
 
-    public static Showable storeKeeper = new StoreKeeper();
+    public static Showable storeKeeper;
 
     public static final String photoFolder = "photofolder";
 

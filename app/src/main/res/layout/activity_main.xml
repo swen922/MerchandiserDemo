@@ -125,7 +125,6 @@
         android:layout_marginRight="6dp"
 
         android:gravity="center_vertical|left"
-        android:autoSizeTextType="uniform"
         app:autoSizeTextType="uniform"
         app:autoSizeStepGranularity="1sp"
         app:autoSizeMinTextSize="6sp"

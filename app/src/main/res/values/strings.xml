@@ -2,6 +2,13 @@
     <string name="app_name">MerchandiserDemo</string>
 
     <string name="class_desc_format">Формат:</string>
+    <string name="class_desc_region">Регион:</string>
+    <string name="class_desc_city_name">Город:</string>
+    <string name="class_desc_city_type">Тип поселения:</string>
+    <string name="class_desc_chain_name">Сеть:</string>
+    <string name="class_desc_chain_type">Тип Сети:</string>
+    <string name="class_desc_brand">Бренд:</string>
+    <string name="class_desc_other">Прочие признаки:</string>
 
     <string name="default_header">Фильтры не назначены</string>
     <string name="default_preview">Просмотровое фото отсутствует</string>
@@ -13,6 +20,8 @@
     <string name="class_format_4">Гипермаркет</string>
     <string name="class_format_5">Киоск</string>
     <string name="class_format_6">Открытый рынок</string>
+
+    <string name="another">и ещё</string>
 
 
 

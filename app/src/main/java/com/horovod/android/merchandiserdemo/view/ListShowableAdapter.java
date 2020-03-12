@@ -1,11 +1,16 @@
 package com.horovod.android.merchandiserdemo.view;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -16,20 +21,25 @@ import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 import com.horovod.android.merchandiserdemo.data.Data;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
     private Context myContext;
     private int resourceID;
+    private WindowManager windowManager;
 
-    public ListShowableAdapter(Context context, int resource, List<Showable> list) {
+    public ListShowableAdapter(Context context, int resource, List<Showable> list, WindowManager manager) {
         super(context, resource, list);
         myContext = context;
         resourceID = resource;
+        this.windowManager = manager;
     }
 
 
@@ -76,12 +86,15 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                 if (type != ClassifierType.FORMAT) {
                     List<Classifier> list = showable.getClassifiersByType(type);
                     if (!list.isEmpty()) {
-                        sb.append("\n");
+
+                        sb.append("\n").append(type.getHeader(myContext.getResources()).toUpperCase()).append(" ");
                         if (list.size() > 2) {
-                            sb.append(list.get(0).getName()).append("; ").append(list.get(1).getName()).append("...");
+                            int another = list.size() - 2;
+                            sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName()).append(", ");
+                            sb.append(myContext.getResources().getString(R.string.another)).append(" ").append(another).append("...");
                         }
                         else if (list.size() == 2) {
-                            sb.append(list.get(0).getName()).append("; ").append(list.get(1).getName());
+                            sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName());
                         }
                         else {
                             sb.append(list.get(0).getName());
@@ -100,11 +113,19 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         }
 
         if (!showable.getPreview().isEmpty()) {
-            setLayoutParamsHeight(viewHolder.imageView, ConstraintLayout.LayoutParams.WRAP_CONTENT);
             String image = showable.getPreview();
             File file1 = new File(myContext.getFilesDir() + File.separator + Data.photoFolder + File.separator + image);
             if (file1.exists()) {
+
                 Picasso.get().load(file1).into(viewHolder.imageView);
+                //Bitmap bm = ((BitmapDrawable)viewHolder.imageView.getDrawable()).getBitmap();
+                //Log.i("CHECK FILE ||||", "showable.getName() = " + showable.getName());
+                //Log.i("CHECK FILE ||||", "ifile1.getName() = " + file1.getName());
+                //Bitmap bm = getBitmap(viewHolder.imageView);
+
+                //int imageHeight = getImageHeight(file1);
+                int imageHeight = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+                setLayoutParamsHeight(viewHolder.imageView, imageHeight);
             }
             else {
                 setLayoutParamsHeight(viewHolder.imageView, 0);
@@ -124,9 +145,117 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         view.setLayoutParams(params);
     }
 
+    /*private Bitmap getBitmap(ImageView imageView) {
+        imageView.setDrawingCacheEnabled(true);
+        imageView.measure(View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED),
+                View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED));
+        imageView.layout(0, 0,
+                imageView.getMeasuredWidth(), imageView.getMeasuredHeight());
+        imageView.buildDrawingCache(true);
+        Bitmap bitmap = null;
+        *//*bitmap = Bitmap.createBitmap(imageView.getDrawingCache());
+        imageView.setDrawingCacheEnabled(false);*//*
+        Log.i("BITMAP ||||", "imageView.getDrawingCache() == null = " + (imageView.getDrawingCache() == null));
+        return bitmap;
+    }
+
+
+    private int getImageHeight(Bitmap bm) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        double widthScreen = metrics.widthPixels;
+        double heightScreen = metrics.heightPixels;
+        double result = heightScreen / 2;
+
+        if (bm != null) {
+            double widthFile = bm.getWidth();
+            double heightFile = bm.getHeight();
+
+            double ratio = widthScreen / widthFile;
+            double heightScaled = heightFile * ratio;
+            double limit = 600 < (heightScreen/2) ? 600 : (heightScreen/2);
+            result = heightScaled < limit ? heightScaled : limit;
+        }
+
+        return (int) result;
+    }*/
+
+    private int getImageHeight(File file) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        double widthScreen = metrics.widthPixels;
+        double heightScreen = metrics.heightPixels;
+        double result = heightScreen / 3;
+
+        Log.i("IMAGE HEIGHT ||| ", "file.getName() = " + file.getName());
+        Log.i("IMAGE HEIGHT ||| ", "widthScreen = " + widthScreen);
+        Log.i("IMAGE HEIGHT ||| ", "heightScreen = " + heightScreen);
+        Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);
+
+        Bitmap bm = getBitmap(file);
+
+        if (bm != null) {
+            double widthFile = bm.getWidth();
+            double heightFile = bm.getHeight();
+
+            double ratio = widthScreen / widthFile;
+            double heightScaled = heightFile * ratio;
+            double limit = 600 < (heightScreen/3) ? 600 : (heightScreen/3);
+            result = heightScaled < limit ? heightScaled : limit;
+
+            Log.i("IMAGE HEIGHT ||| ", "widthFile = " + widthFile);
+            Log.i("IMAGE HEIGHT ||| ", "heightFile = " + heightFile);
+            Log.i("IMAGE HEIGHT ||| ", "ratio = " + ratio);
+            Log.i("IMAGE HEIGHT ||| ", "heightScaled = " + heightScaled);
+
+            Log.i("IMAGE HEIGHT ||| ", "limit = " + limit);
+            Log.i("IMAGE HEIGHT ||| ", "result = " + result);
+            Log.i("---------------- ", "-------------------------------------------------");
+
+        }
+
+        return (int) result;
+    }
+
+    private Bitmap getBitmap(File file) {
+        final List<Bitmap> listBM = new ArrayList<>();
+        try {
+            Target target = new Target() {
+                @Override
+                public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                    listBM.add(bitmap);
+                }
+
+                @Override
+                public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                }
+
+                @Override
+                public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                }
+            };
+            Picasso.get().load(file).into(target);
+
+        } catch (Exception e) {
+            Log.e("EXCEPTION!  |||| ", e.toString());
+        }
+
+        if (!listBM.isEmpty()) {
+            return listBM.get(0);
+        }
+        return null;
+    }
+
+
     class ViewHolder {
         TextView header;
         TextView comment;
         ImageView imageView;
     }
+
+
 }

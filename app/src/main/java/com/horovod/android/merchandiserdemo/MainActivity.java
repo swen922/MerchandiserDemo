@@ -1,9 +1,11 @@
 package com.horovod.android.merchandiserdemo;
 
+import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,10 +15,13 @@ import android.widget.TextView;
 
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierFormat;
+import com.horovod.android.merchandiserdemo.classifier.ClassifierRegion;
 import com.horovod.android.merchandiserdemo.data.Data;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.horovod.android.merchandiserdemo.showable.Store;
+import com.horovod.android.merchandiserdemo.showable.StoreKeeper;
 import com.horovod.android.merchandiserdemo.view.ListShowableAdapter;
+import com.squareup.picasso.Picasso;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -41,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Data.storeKeeper = new StoreKeeper();
+
         emulateData();
 
         listView = findViewById(R.id.main_listview);
@@ -57,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (adapter == null) {
-            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, Data.storeKeeper.getShowables());
+            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, Data.storeKeeper.getShowables(), getWindowManager());
         }
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
@@ -74,12 +81,17 @@ public class MainActivity extends AppCompatActivity {
         Showable store1 = Store.getInstance(Data.storeKeeper, "Традиция номер один");
 
         store1.setComment("Comment store-1");
-        store1.setPreview("shop_trad_1_step0_b_preview.jpg");
+        store1.setPreview("shop_trad_1_step1_b_preview.jpg");
         store1.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
+        store1.addClassifier(new ClassifierRegion("Приволжский регион"));
+        store1.addClassifier(new ClassifierRegion("Центральный регион"));
+        store1.addClassifier(new ClassifierRegion("Южный регион"));
 
-        Showable store2 = Store.getInstance(Data.storeKeeper,"Традиция номер два");
+        Showable store2 = Store.getInstance(Data.storeKeeper,"Традиция номер два, упрощенный для Сибири вариант такой");
         store2.setPreview("shop_trad_1_step0_b_preview.jpg");
         store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
+        store2.addClassifier(new ClassifierRegion("Сибирский регион"));
+        store2.addClassifier(new ClassifierRegion("Дальневосточный регион"));
 
         Showable store3 = Store.getInstance(Data.storeKeeper, "Мини-маркет первый");
         store3.setComment("Comment store-3");
@@ -90,6 +102,8 @@ public class MainActivity extends AppCompatActivity {
 
         Showable store5 = Store.getInstance(Data.storeKeeper, "Store-5");
         store5.setComment("Comment store-5");
+
+
 
 
     }

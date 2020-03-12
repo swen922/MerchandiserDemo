@@ -1,23 +1,22 @@
 package com.horovod.android.merchandiserdemo.classifier;
 
-public class ClassifierFormat implements Classifier {
+public class ClassifierChainName implements Classifier {
 
     private String name;
     private String comment;
 
-    public ClassifierFormat(String name) {
+    public ClassifierChainName(String name) {
         this.name = name;
     }
 
-
     @Override
     public ClassifierType getClassifierType() {
-        return ClassifierType.FORMAT;
+        return ClassifierType.CHAIN_NAME;
     }
 
     @Override
     public String getName() {
-        return name;
+        return this.name;
     }
 
     @Override
@@ -29,9 +28,8 @@ public class ClassifierFormat implements Classifier {
 
     @Override
     public String getComment() {
-        return comment;
+        return this.comment;
     }
-
 
     @Override
     public void setComment(String comment) {
@@ -39,5 +37,4 @@ public class ClassifierFormat implements Classifier {
             this.comment = comment;
         }
     }
-
 }
