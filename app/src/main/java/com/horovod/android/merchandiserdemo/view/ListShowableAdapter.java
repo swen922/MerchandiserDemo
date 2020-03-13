@@ -24,8 +24,6 @@ import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,6 +32,7 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
     private Context myContext;
     private int resourceID;
     private WindowManager windowManager;
+    private boolean thisIsStore = true;
 
     public ListShowableAdapter(Context context, int resource, List<Showable> list, WindowManager manager) {
         super(context, resource, list);
@@ -114,18 +113,35 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
         if (!showable.getPreview().isEmpty()) {
             String image = showable.getPreview();
-            File file1 = new File(myContext.getFilesDir() + File.separator + Data.photoFolder + File.separator + image);
-            if (file1.exists()) {
+            File file = new File(myContext.getFilesDir() + File.separator + Data.photoFolder + File.separator + image);
+            if (file.exists()) {
 
-                Picasso.get().load(file1).into(viewHolder.imageView);
-                //Bitmap bm = ((BitmapDrawable)viewHolder.imageView.getDrawable()).getBitmap();
-                //Log.i("CHECK FILE ||||", "showable.getName() = " + showable.getName());
-                //Log.i("CHECK FILE ||||", "ifile1.getName() = " + file1.getName());
-                //Bitmap bm = getBitmap(viewHolder.imageView);
 
-                //int imageHeight = getImageHeight(file1);
-                int imageHeight = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+                /** Нам требуется динамически установить высоту картинки согласно тому, как она впишется в ImageView.
+                 * Однако, функция ConstraintLayout.LayoutParams.WRAP_CONTENT не работает нормально в старых версиях Андроида,
+                 * причем в некоторых виртуальных моделях (Nexus S) даже и в более современных версиях (API 27).
+                 * В реальном планшете у меня (Lenovo с API 23) тоже не работает, как надо.
+                 * Получается высота ImageView сильно больше, чем картинка, практически во всю высоту экрана.
+                 * И даже если работает (на телефоне Samsung A30), то добавляет небольшие поля сверху и снизу,
+                 * причем разного размера для разных фото.
+                 *
+                 * Так что приходится подсчитывать высоту картинки вручную.
+                 *
+                 * Причем, каждую картинку приходится фактически загружать из папки raw 2 раза:
+                 * сначала Пикассо загружает ее сразу в ImageView, а потом еще раз грузим ее через Пикассо,
+                 * чтобы получить объект Bitmap и подсчитать его высоту после масштабирования в ширину экрана,
+                 * и назначить эту высоту для ImageView.
+                 * А если пытаться не грузить первым действием картинку в ImageView через Пикассо,
+                 * а вставить вручную полученный отдельно Bitmap в ImageView через метод setImageBitmap(Bitmap b),
+                 * то тогда картинки очень плохо загружается в макет: на старте все отсутствуют, потом постепенно появляются, но не все...
+                 * В общем, вставлять только через Пикассо! */
+
+                Picasso.get().load(file).into(viewHolder.imageView);
+                Bitmap bitmap = getBitmap(file);
+                //viewHolder.imageView.setImageBitmap(bitmap); – так очень плохо загружается на странице, появляется не сразу
+                int imageHeight = getImageHeight(bitmap);
                 setLayoutParamsHeight(viewHolder.imageView, imageHeight);
+
             }
             else {
                 setLayoutParamsHeight(viewHolder.imageView, 0);
@@ -134,6 +150,13 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         else {
             setLayoutParamsHeight(viewHolder.imageView, 0);
         }
+
+        convertView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
 
         return convertView;
     }
@@ -181,7 +204,7 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         return (int) result;
     }*/
 
-    private int getImageHeight(File file) {
+    /*private int getImageHeight(File file) {
 
         DisplayMetrics metrics = new DisplayMetrics();
         windowManager.getDefaultDisplay().getMetrics(metrics);
@@ -195,6 +218,42 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);
 
         Bitmap bm = getBitmap(file);
+
+        if (bm != null) {
+            double widthFile = bm.getWidth();
+            double heightFile = bm.getHeight();
+
+            double ratio = widthScreen / widthFile;
+            double heightScaled = heightFile * ratio;
+            double limit = 600 < (heightScreen/3) ? 600 : (heightScreen/3);
+            result = heightScaled < limit ? heightScaled : limit;
+
+            Log.i("IMAGE HEIGHT ||| ", "widthFile = " + widthFile);
+            Log.i("IMAGE HEIGHT ||| ", "heightFile = " + heightFile);
+            Log.i("IMAGE HEIGHT ||| ", "ratio = " + ratio);
+            Log.i("IMAGE HEIGHT ||| ", "heightScaled = " + heightScaled);
+
+            Log.i("IMAGE HEIGHT ||| ", "limit = " + limit);
+            Log.i("IMAGE HEIGHT ||| ", "result = " + result);
+            Log.i("---------------- ", "-------------------------------------------------");
+
+        }
+
+        return (int) result;
+    }*/
+
+
+    private int getImageHeight(Bitmap bm) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        double widthScreen = metrics.widthPixels;
+        double heightScreen = metrics.heightPixels;
+        double result = heightScreen / 3;
+
+        Log.i("IMAGE HEIGHT ||| ", "widthScreen = " + widthScreen);
+        Log.i("IMAGE HEIGHT ||| ", "heightScreen = " + heightScreen);
+        Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);
 
         if (bm != null) {
             double widthFile = bm.getWidth();

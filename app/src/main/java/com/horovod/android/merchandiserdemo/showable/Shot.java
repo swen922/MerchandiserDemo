@@ -1,50 +1,42 @@
 package com.horovod.android.merchandiserdemo.showable;
 
-import android.util.Log;
-
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
-import com.horovod.android.merchandiserdemo.data.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class Store implements Showable {
+public class Shot implements Showable {
 
-    private int idNumber = -1;
     private String preview = "";
+    private String image = "";
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
-    private List<Showable> showables = new ArrayList<>();
     private Showable parent;
 
-    private Store() {
+    private Shot() {
     }
 
-    public static Store getInstance(Showable parent, String name) {
-        Store store = new Store();
-        store.setIdNumber(Data.incrementAndGetNewId());
-        store.setName(name);
-        store.setParent(parent); // Этим действием сразу и добавляем магазин в список (см. метод setParent() ---> parent.addShowable())
-        return store;
+    public static Shot getInstance(Showable parent, String name) {
+        Shot shot = new Shot();
+        shot.setName(name);
+        shot.setParent(parent); // Этим действием сразу и добавляем магазин в список (см. метод setParent() ---> parent.addShowable())
+        return shot;
     }
 
     @Override
     public int getIdNumber() {
-        return this.idNumber;
+        return -1;
     }
 
     @Override
     public ShowableType getShowableType() {
-        return ShowableType.STORE;
+        return ShowableType.SHOT;
     }
 
     @Override
     public void setIdNumber(int newIdNumber) {
-        if (newIdNumber > 0) {
-            this.idNumber = newIdNumber;
-        }
     }
 
     @Override
@@ -118,14 +110,11 @@ public class Store implements Showable {
 
     @Override
     public List<Showable> getShowables() {
-        return this.showables;
+        return null;
     }
 
     @Override
     public void addShowable(Showable showable) {
-        if (showable != null) {
-            this.showables.add(showable);
-        }
     }
 
     @Override
@@ -143,4 +132,18 @@ public class Store implements Showable {
         }
     }
 
+
+    /** TODO сделать клонирование себя, чтобы разом все фотки переносить в другой магазин */
+
+
+    public Showable cloneMe(Showable newParent) {
+        Showable result = Store.getInstance(newParent, this.name);
+
+
+    }
+
+    public void cloneShowablesFrom(List<Showable> aliens) {
+
+
+    }
 }

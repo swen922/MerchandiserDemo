@@ -8,7 +8,13 @@
     <string name="class_desc_chain_name">Сеть:</string>
     <string name="class_desc_chain_type">Тип Сети:</string>
     <string name="class_desc_brand">Бренд:</string>
+    <string name="class_desc_step">Шаг:</string>
     <string name="class_desc_other">Прочие признаки:</string>
+
+    <string name="show_desc_storekeeper">Хранилище магазинов</string>
+    <string name="show_desc_store">Магазин</string>
+    <string name="show_desc_shot">Фото</string>
+
 
     <string name="default_header">Фильтры не назначены</string>
     <string name="default_preview">Просмотровое фото отсутствует</string>

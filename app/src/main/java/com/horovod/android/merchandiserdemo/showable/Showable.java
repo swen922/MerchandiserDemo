@@ -7,8 +7,13 @@ import java.util.List;
 
 public interface Showable {
 
+    public int getIdNumber();
+    public ShowableType getShowableType();
+    public void setIdNumber(int newIdNumber);
     public String getPreview();
     public void setPreview(String preview);
+    public String getImage();
+    public void setImage(String image);
     public String getName();
     public void setName(String name);
     public String getComment();

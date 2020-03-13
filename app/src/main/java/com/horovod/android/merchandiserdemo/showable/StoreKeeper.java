@@ -11,12 +11,37 @@ public class StoreKeeper implements Showable {
     private List<Showable> showables = new ArrayList<>();
 
     @Override
+    public int getIdNumber() {
+        return -1;
+    }
+
+    @Override
+    public ShowableType getShowableType() {
+        return ShowableType.STORE_KEEPER;
+    }
+
+    @Override
+    public void setIdNumber(int newIdNumber) {
+
+    }
+
+    @Override
     public String getPreview() {
         return null;
     }
 
     @Override
     public void setPreview(String preview) {
+
+    }
+
+    @Override
+    public String getImage() {
+        return null;
+    }
+
+    @Override
+    public void setImage(String image) {
 
     }
 

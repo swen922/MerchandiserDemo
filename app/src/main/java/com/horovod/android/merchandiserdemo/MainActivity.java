@@ -16,7 +16,9 @@ import android.widget.TextView;
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierFormat;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierRegion;
+import com.horovod.android.merchandiserdemo.classifier.ClassifierStep;
 import com.horovod.android.merchandiserdemo.data.Data;
+import com.horovod.android.merchandiserdemo.showable.Shot;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.horovod.android.merchandiserdemo.showable.Store;
 import com.horovod.android.merchandiserdemo.showable.StoreKeeper;
@@ -70,6 +72,8 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
+
+
     private void emulateData() {
 
         Field[] fields = R.raw.class.getFields();
@@ -87,6 +91,23 @@ public class MainActivity extends AppCompatActivity {
         store1.addClassifier(new ClassifierRegion("Центральный регион"));
         store1.addClassifier(new ClassifierRegion("Южный регион"));
 
+        Classifier clStep0 = new ClassifierStep("0");
+
+        Showable st1_shot1 = Shot.getInstance(store1, "Общий вид магазина");
+        st1_shot1.setPreview("shop_trad_1_step0_a_preview.jpg");
+        st1_shot1.setImage("shop_trad_1_step0_a.jpg");
+        st1_shot1.addClassifier(clStep0);
+        store1.addShowable(st1_shot1);
+
+        Showable st1_shot2 = Shot.getInstance(store1, "Общий вид всех выкладок");
+        st1_shot2.setPreview("shop_trad_1_step0_b_preview.jpg");
+        st1_shot2.setImage("shop_trad_1_step0_b.jpg");
+        st1_shot2.addClassifier(clStep0);
+        store1.addShowable(st1_shot2);
+
+
+
+
         Showable store2 = Store.getInstance(Data.storeKeeper,"Традиция номер два, упрощенный для Сибири вариант такой");
         store2.setPreview("shop_trad_1_step0_b_preview.jpg");
         store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
@@ -102,8 +123,6 @@ public class MainActivity extends AppCompatActivity {
 
         Showable store5 = Store.getInstance(Data.storeKeeper, "Store-5");
         store5.setComment("Comment store-5");
-
-
 
 
     }
