@@ -140,19 +140,20 @@ public class MainActivity extends AppCompatActivity {
         st1_shot1.setPreview("shop_trad_1_step0_a_preview.jpg");
         st1_shot1.setImage("shop_trad_1_step0_a.jpg");
         st1_shot1.addClassifier(clStep0);
-        store1.addShowable(st1_shot1);
 
         Showable st1_shot2 = Shot.getInstance(store1, "Общий вид всех выкладок");
         st1_shot2.setPreview("shop_trad_1_step0_b_preview.jpg");
         st1_shot2.setImage("shop_trad_1_step0_b.jpg");
         st1_shot2.addClassifier(clStep0);
-        store1.addShowable(st1_shot2);
 
         Showable st1_shot3 = Shot.getInstance(store1, "Общий вид POPM в Шаге-1");
         st1_shot3.setPreview("shop_trad_1_step0_popm_1_preview.jpg");
         st1_shot3.setImage("shop_trad_1_step0_popm_1.jpg");
         st1_shot3.addClassifier(clStep0);
-        store1.addShowable(st1_shot3);
+
+        for (Showable sh : store1.getShowables()) {
+            Log.i("SHOWBLES ||| ", " " + sh);
+        }
 
 
         Showable store2 = store1.cloneMe(Data.storeKeeper);

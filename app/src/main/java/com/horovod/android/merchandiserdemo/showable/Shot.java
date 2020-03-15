@@ -1,5 +1,7 @@
 package com.horovod.android.merchandiserdemo.showable;
 
+import android.util.Log;
+
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 import com.horovod.android.merchandiserdemo.data.Data;
@@ -40,6 +42,9 @@ public class Shot implements Showable {
 
     @Override
     public void setIdNumber(int newIdNumber) {
+        if (newIdNumber > 0) {
+            this.idNumber = newIdNumber;
+        }
     }
 
     @Override

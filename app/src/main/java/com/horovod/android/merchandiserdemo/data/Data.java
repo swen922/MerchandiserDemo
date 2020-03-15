@@ -32,6 +32,7 @@ public class Data {
         return showableIdNumber;
     }
 
-
-
+    public static int getShowableIdNumber() {
+        return showableIdNumber;
+    }
 }
