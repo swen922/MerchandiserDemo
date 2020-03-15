@@ -1,5 +1,9 @@
 package com.horovod.android.merchandiserdemo;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
@@ -33,14 +37,19 @@ import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private ArrayAdapter<Showable> adapter;
+    private Showable parent;
 
     private TextView comment;
     private TextView commentBack;
+
+    private BroadcastReceiver changeShowableReceiver;
 
 
     @Override
@@ -49,6 +58,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Data.storeKeeper = new StoreKeeper();
+        parent = Data.storeKeeper;
 
         emulateData();
 
@@ -66,13 +76,46 @@ public class MainActivity extends AppCompatActivity {
         }
 
         if (adapter == null) {
-            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, Data.storeKeeper.getShowables(), getWindowManager());
+            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
         }
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        if (changeShowableReceiver == null) {
+            changeShowableReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+                    int id = intent.getIntExtra(Data.KEY_IDNUMBER, -1);
+
+                    Log.i("ON RECEIVE ||||| " , "id = " + id);
+
+                    if (id > 0) {
+                        Showable newParent = parent.getShowableById(id);
+
+                        Log.i("ON RECEIVE ||||| " , "newParent = " + newParent);
+
+                        if (newParent != null) {
+                            parent = newParent;
+                            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
+                            listView.setAdapter(null);
+                            listView.setAdapter(adapter);
+                            adapter.notifyDataSetChanged();
+                        }
+                    }
+                }
+            };
+        }
+
+        IntentFilter changeShowableFilter = new IntentFilter(Data.INTENT_REPLACE_SHOWABLE);
+        registerReceiver(changeShowableReceiver, changeShowableFilter);
+
     }
 
-
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unregisterReceiver(changeShowableReceiver);
+    }
 
     private void emulateData() {
 
@@ -105,14 +148,21 @@ public class MainActivity extends AppCompatActivity {
         st1_shot2.addClassifier(clStep0);
         store1.addShowable(st1_shot2);
 
+        Showable st1_shot3 = Shot.getInstance(store1, "Общий вид POPM в Шаге-1");
+        st1_shot3.setPreview("shop_trad_1_step0_popm_1_preview.jpg");
+        st1_shot3.setImage("shop_trad_1_step0_popm_1.jpg");
+        st1_shot3.addClassifier(clStep0);
+        store1.addShowable(st1_shot3);
 
 
-
-        Showable store2 = Store.getInstance(Data.storeKeeper,"Традиция номер два, упрощенный для Сибири вариант такой");
-        store2.setPreview("shop_trad_1_step0_b_preview.jpg");
+        Showable store2 = store1.cloneMe(Data.storeKeeper);
+        store2.setName("Традиция номер два упрощенная");
+        store2.setPreview("shop_trad_1_step1_b_preview.jpg");
+        store2.clearClassifiers();
         store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
         store2.addClassifier(new ClassifierRegion("Сибирский регион"));
         store2.addClassifier(new ClassifierRegion("Дальневосточный регион"));
+
 
         Showable store3 = Store.getInstance(Data.storeKeeper, "Мини-маркет первый");
         store3.setComment("Comment store-3");

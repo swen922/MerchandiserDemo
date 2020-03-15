@@ -99,6 +99,13 @@ public class Store implements Showable {
     }
 
     @Override
+    public void setClassifiers(List<Classifier> list) {
+        if (list != null) {
+            this.classifiers = list;
+        }
+    }
+
+    @Override
     public List<Classifier> getClassifiersByType(ClassifierType type) {
         List<Classifier> result = new ArrayList<>();
         for (Classifier cl : this.classifiers) {
@@ -117,8 +124,34 @@ public class Store implements Showable {
     }
 
     @Override
+    public void clearClassifiers() {
+        this.classifiers.clear();
+    }
+
+    @Override
     public List<Showable> getShowables() {
         return this.showables;
+    }
+
+    @Override
+    public Showable getShowableById(int id) {
+        Showable result = null;
+        if (!this.showables.isEmpty()) {
+            for (Showable sh : showables) {
+                if (sh.getIdNumber() == id) {
+                    result = sh;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void setShowables(List<Showable> list) {
+        if (list != null) {
+            this.showables = list;
+        }
     }
 
     @Override
@@ -126,6 +159,11 @@ public class Store implements Showable {
         if (showable != null) {
             this.showables.add(showable);
         }
+    }
+
+    @Override
+    public void clearShowables() {
+        this.showables.clear();
     }
 
     @Override
@@ -143,4 +181,30 @@ public class Store implements Showable {
         }
     }
 
+    @Override
+    public Showable cloneMe(Showable newParent) {
+        Showable result = Store.getInstance(newParent, this.name);
+        result.setPreview(this.preview);
+        result.setComment(this.comment);
+        List<Classifier> newListClass = new ArrayList<>();
+        for (Classifier cl : this.classifiers) {
+            newListClass.add(cl.clonMe());
+        }
+        result.setClassifiers(newListClass);
+        List<Showable> newListShow = new ArrayList<>();
+        for (Showable sh : this.showables) {
+            newListShow.add(sh.cloneMe(result));
+        }
+        result.setShowables(newListShow);
+        return result;
+    }
+
+
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Showable ");
+        sb.append(this.name).append(", id = ").append(this.idNumber);
+        return sb.toString();
+    }
 }

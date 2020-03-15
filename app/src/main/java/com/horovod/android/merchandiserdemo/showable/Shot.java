@@ -2,12 +2,14 @@ package com.horovod.android.merchandiserdemo.showable;
 
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
+import com.horovod.android.merchandiserdemo.data.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Shot implements Showable {
 
+    private int idNumber = -1;
     private String preview = "";
     private String image = "";
     private String name = "";
@@ -20,6 +22,7 @@ public class Shot implements Showable {
 
     public static Shot getInstance(Showable parent, String name) {
         Shot shot = new Shot();
+        shot.setIdNumber(Data.incrementAndGetNewId());
         shot.setName(name);
         shot.setParent(parent); // Этим действием сразу и добавляем магазин в список (см. метод setParent() ---> parent.addShowable())
         return shot;
@@ -102,10 +105,22 @@ public class Shot implements Showable {
     }
 
     @Override
+    public void setClassifiers(List<Classifier> list) {
+        if (list != null) {
+            this.classifiers = list;
+        }
+    }
+
+    @Override
     public void addClassifier(Classifier classifier) {
         if (classifier != null) {
             this.classifiers.add(classifier);
         }
+    }
+
+    @Override
+    public void clearClassifiers() {
+        this.classifiers.clear();
     }
 
     @Override
@@ -114,7 +129,21 @@ public class Shot implements Showable {
     }
 
     @Override
+    public Showable getShowableById(int id) {
+        return null;
+    }
+
+    @Override
+    public void setShowables(List<Showable> list) {
+
+    }
+
+    @Override
     public void addShowable(Showable showable) {
+    }
+
+    @Override
+    public void clearShowables() {
     }
 
     @Override
@@ -132,18 +161,26 @@ public class Shot implements Showable {
         }
     }
 
-
-    /** TODO сделать клонирование себя, чтобы разом все фотки переносить в другой магазин */
-
-
+    @Override
     public Showable cloneMe(Showable newParent) {
-        Showable result = Store.getInstance(newParent, this.name);
-
-
+        Showable result = Shot.getInstance(newParent, this.name);
+        result.setPreview(this.preview);
+        result.setImage(this.image);
+        result.setComment(this.comment);
+        List<Classifier> newListClass = new ArrayList<>();
+        for (Classifier cl : this.classifiers) {
+            newListClass.add(cl.clonMe());
+        }
+        result.setClassifiers(newListClass);
+        return result;
     }
 
-    public void cloneShowablesFrom(List<Showable> aliens) {
-
-
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Showable ");
+        sb.append(this.name).append(", id = ").append(this.idNumber);
+        return sb.toString();
     }
+
+
 }

@@ -1,6 +1,7 @@
 package com.horovod.android.merchandiserdemo.view;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
@@ -47,6 +48,9 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
         final Showable showable = getItem(position);
 
+        Log.i("GET VIEW ||||| " , "showable = " + showable);
+
+
         ViewHolder viewHolder;
         LayoutInflater inflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -79,10 +83,19 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                 }
             }
 
+            // Классификатор по шагу тоже ставим вперед, потому что он важен для Shot'ов
+            List<Classifier> clSTEP = showable.getClassifiersByType(ClassifierType.STEP);
+            if (!clSTEP.isEmpty()) {
+                for (Classifier clST : clSTEP) {
+                    sb.append("\n").append(myContext.getResources().getString(R.string.class_desc_step).toUpperCase()).append(" ");
+                    sb.append(clST.getName());
+                }
+            }
+
             // А вот остальные классификаторы могут быть по несколько и по много в одном магазине
             // поэтому по ним ставим ограничение вручную: 2 штуки показываем, а далее – многоточие
             for (ClassifierType type : ClassifierType.values()) {
-                if (type != ClassifierType.FORMAT) {
+                if (type != ClassifierType.FORMAT && type != ClassifierType.STEP) {
                     List<Classifier> list = showable.getClassifiersByType(type);
                     if (!list.isEmpty()) {
 
@@ -127,7 +140,7 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                  *
                  * Так что приходится подсчитывать высоту картинки вручную.
                  *
-                 * Причем, каждую картинку приходится фактически загружать из папки raw 2 раза:
+                 * Причем, каждую картинку приходится фактически загружать из домашней папки 2 раза:
                  * сначала Пикассо загружает ее сразу в ImageView, а потом еще раз грузим ее через Пикассо,
                  * чтобы получить объект Bitmap и подсчитать его высоту после масштабирования в ширину экрана,
                  * и назначить эту высоту для ImageView.
@@ -154,6 +167,13 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         convertView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                Intent intent = new Intent(Data.INTENT_REPLACE_SHOWABLE);
+                intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
+                myContext.sendBroadcast(intent);
+
+                Log.i("ON CLICK ||||| " , "intent = " + intent);
+                Log.i("ON CLICK ||||| " , "showable.getIdNumber = " + showable.getIdNumber());
 
             }
         });
@@ -251,9 +271,9 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         double heightScreen = metrics.heightPixels;
         double result = heightScreen / 3;
 
-        Log.i("IMAGE HEIGHT ||| ", "widthScreen = " + widthScreen);
+        /*Log.i("IMAGE HEIGHT ||| ", "widthScreen = " + widthScreen);
         Log.i("IMAGE HEIGHT ||| ", "heightScreen = " + heightScreen);
-        Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);
+        Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);*/
 
         if (bm != null) {
             double widthFile = bm.getWidth();
@@ -264,14 +284,14 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
             double limit = 600 < (heightScreen/3) ? 600 : (heightScreen/3);
             result = heightScaled < limit ? heightScaled : limit;
 
-            Log.i("IMAGE HEIGHT ||| ", "widthFile = " + widthFile);
+            /*Log.i("IMAGE HEIGHT ||| ", "widthFile = " + widthFile);
             Log.i("IMAGE HEIGHT ||| ", "heightFile = " + heightFile);
             Log.i("IMAGE HEIGHT ||| ", "ratio = " + ratio);
             Log.i("IMAGE HEIGHT ||| ", "heightScaled = " + heightScaled);
 
             Log.i("IMAGE HEIGHT ||| ", "limit = " + limit);
             Log.i("IMAGE HEIGHT ||| ", "result = " + result);
-            Log.i("---------------- ", "-------------------------------------------------");
+            Log.i("---------------- ", "-------------------------------------------------");*/
 
         }
 
@@ -300,7 +320,7 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
             Picasso.get().load(file).into(target);
 
         } catch (Exception e) {
-            Log.e("EXCEPTION!  |||| ", e.toString());
+            //Log.e("EXCEPTION!  |||| ", e.toString());
         }
 
         if (!listBM.isEmpty()) {

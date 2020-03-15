@@ -2,8 +2,8 @@ package com.horovod.android.merchandiserdemo.classifier;
 
 public class ClassifierBrand implements Classifier {
 
-    private String name;
-    private String comment;
+    private String name = "";
+    private String comment = "";
 
     public ClassifierBrand(String name) {
         this.name = name;
@@ -36,5 +36,12 @@ public class ClassifierBrand implements Classifier {
         if (comment != null) {
             this.comment = comment;
         }
+    }
+
+    @Override
+    public Classifier clonMe() {
+        Classifier clone = new ClassifierBrand(this.name);
+        clone.setComment(this.comment);
+        return clone;
     }
 }

@@ -71,6 +71,11 @@ public class StoreKeeper implements Showable {
     }
 
     @Override
+    public void setClassifiers(List<Classifier> list) {
+
+    }
+
+    @Override
     public List<Classifier> getClassifiersByType(ClassifierType type) {
         return null;
     }
@@ -81,8 +86,33 @@ public class StoreKeeper implements Showable {
     }
 
     @Override
+    public void clearClassifiers() {
+    }
+
+    @Override
     public List<Showable> getShowables() {
         return this.showables;
+    }
+
+    @Override
+    public Showable getShowableById(int id) {
+        Showable result = null;
+        if (!this.showables.isEmpty()) {
+            for (Showable sh : showables) {
+                if (sh.getIdNumber() == id) {
+                    result = sh;
+                    break;
+                }
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void setShowables(List<Showable> list) {
+        if (list != null) {
+            this.showables = list;
+        }
     }
 
     @Override
@@ -93,6 +123,11 @@ public class StoreKeeper implements Showable {
     }
 
     @Override
+    public void clearShowables() {
+        this.showables.clear();
+    }
+
+    @Override
     public Showable getParent() {
         return null;
     }
@@ -100,5 +135,16 @@ public class StoreKeeper implements Showable {
     @Override
     public void setParent(Showable parent) {
 
+    }
+
+    @Override
+    public Showable cloneMe(Showable newParent) {
+        return this;
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("Showable StoreKeeper");
+        return sb.toString();
     }
 }

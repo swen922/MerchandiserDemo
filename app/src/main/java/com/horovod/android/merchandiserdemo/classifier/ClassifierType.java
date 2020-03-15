@@ -7,13 +7,13 @@ import com.horovod.android.merchandiserdemo.R;
 
 public enum ClassifierType {
     FORMAT(R.string.class_desc_format),
+    STEP(R.string.class_desc_step),
     REGION(R.string.class_desc_region),
     CITY_NAME(R.string.class_desc_city_name),
     CITY_TYPE(R.string.class_desc_city_type),
     CHAIN_NAME(R.string.class_desc_chain_name),
     CHAIN_TYPE(R.string.class_desc_chain_type),
     BRAND(R.string.class_desc_brand),
-    STEP(R.string.class_desc_step),
     OTHER(R.string.class_desc_other);
 
     private int headerRes;

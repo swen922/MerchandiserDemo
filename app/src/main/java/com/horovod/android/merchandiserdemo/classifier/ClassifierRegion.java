@@ -2,8 +2,8 @@ package com.horovod.android.merchandiserdemo.classifier;
 
 public class ClassifierRegion implements Classifier {
 
-    private String name;
-    private String comment;
+    private String name = "";
+    private String comment = "";
 
     public ClassifierRegion(String name) {
         this.name = name;
@@ -36,6 +36,13 @@ public class ClassifierRegion implements Classifier {
         if (comment != null) {
             this.comment = comment;
         }
+    }
+
+    @Override
+    public Classifier clonMe() {
+        Classifier clone = new ClassifierRegion(this.name);
+        clone.setComment(this.comment);
+        return clone;
     }
 
 }
