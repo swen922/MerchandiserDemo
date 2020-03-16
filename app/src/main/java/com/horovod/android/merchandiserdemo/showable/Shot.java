@@ -32,7 +32,7 @@ public class Shot implements Showable {
 
     @Override
     public int getIdNumber() {
-        return -1;
+        return this.idNumber;
     }
 
     @Override
@@ -61,11 +61,14 @@ public class Shot implements Showable {
 
     @Override
     public String getImage() {
-        return null;
+        return this.image;
     }
 
     @Override
     public void setImage(String image) {
+        if (image != null) {
+            this.image = image;
+        }
 
     }
 
@@ -153,7 +156,7 @@ public class Shot implements Showable {
 
     @Override
     public Showable getParent() {
-        return null;
+        return this.parent;
     }
 
     @Override

@@ -13,7 +13,7 @@ public class Data {
     private static int showableIdNumber = 1;
     private static List<Integer> existingIdShowables = new ArrayList<>();
 
-    public static Showable storeKeeper;
+    //public static Showable storeKeeper;
 
     public static final String photoFolder = "photofolder";
 
@@ -21,10 +21,6 @@ public class Data {
 
     public static final String KEY_IDNUMBER = "com.horovod.android.merchandiserdemo.KEY_IDNUMBER";
 
-
-    public static void addStore(Showable showable) {
-        storeKeeper.addShowable(showable);
-    }
 
     /** REAL APP - В реальном приложении не нужно */
     public static int incrementAndGetNewId() {

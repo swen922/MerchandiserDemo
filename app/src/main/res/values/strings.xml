@@ -16,7 +16,7 @@
     <string name="show_desc_shot">Фото</string>
 
 
-    <string name="default_header">Фильтры не назначены</string>
+    <string name="default_header">Заголовок списка</string>
     <string name="default_preview">Просмотровое фото отсутствует</string>
     <string name="classifiers_header">Классификаторы:</string>
 
@@ -28,6 +28,11 @@
     <string name="class_format_6">Открытый рынок</string>
 
     <string name="another">и ещё</string>
+
+
+    <string name="show_desc_example_01">Основное хранилище</string>
+
+
 
 
 

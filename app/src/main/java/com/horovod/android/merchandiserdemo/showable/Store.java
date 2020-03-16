@@ -168,7 +168,7 @@ public class Store implements Showable {
 
     @Override
     public Showable getParent() {
-        return null;
+        return this.parent;
     }
 
     @Override

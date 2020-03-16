@@ -11,8 +11,10 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -22,8 +24,10 @@ import com.horovod.android.merchandiserdemo.classifier.ClassifierFormat;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierRegion;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierStep;
 import com.horovod.android.merchandiserdemo.data.Data;
+import com.horovod.android.merchandiserdemo.data.Util;
 import com.horovod.android.merchandiserdemo.showable.Shot;
 import com.horovod.android.merchandiserdemo.showable.Showable;
+import com.horovod.android.merchandiserdemo.showable.ShowableType;
 import com.horovod.android.merchandiserdemo.showable.Store;
 import com.horovod.android.merchandiserdemo.showable.StoreKeeper;
 import com.horovod.android.merchandiserdemo.view.ListShowableAdapter;
@@ -46,8 +50,10 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter<Showable> adapter;
     private Showable parent;
 
+    private TextView header;
+    private ImageView backArrow;
     private TextView comment;
-    private TextView commentBack;
+    private TextView classifiers;
 
     private BroadcastReceiver changeShowableReceiver;
 
@@ -57,23 +63,30 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Data.storeKeeper = new StoreKeeper();
-        parent = Data.storeKeeper;
+        parent = new StoreKeeper(getResources().getString(R.string.show_desc_example_01));
 
         emulateData();
 
         listView = findViewById(R.id.main_listview);
         listView.setDivider(null);
 
+        header = findViewById(R.id.main_header);
+        backArrow = findViewById(R.id.main_icon_back);
         comment = findViewById(R.id.main_comment);
-        commentBack = findViewById(R.id.main_comment_back);
-        //comment.setText(R.string.sample_comment);
-        if (!comment.getText().toString().isEmpty()) {
-            ViewGroup.LayoutParams params = comment.getLayoutParams();
-            params.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
-            comment.setLayoutParams(params);
-            commentBack.setBackgroundColor(getResources().getColor(R.color.gray_2));
-        }
+        classifiers = findViewById(R.id.main_classifiers);
+
+        backArrow.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                backArrow.setClickable(false);
+                Showable newParent = parent.getParent();
+                changeParent(newParent);
+                handleBackArrow();
+            }
+        });
+
+        fillHeaders();
+        handleBackArrow();
 
         if (adapter == null) {
             adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
@@ -86,20 +99,11 @@ public class MainActivity extends AppCompatActivity {
                 @Override
                 public void onReceive(Context context, Intent intent) {
                     int id = intent.getIntExtra(Data.KEY_IDNUMBER, -1);
-
-                    Log.i("ON RECEIVE ||||| " , "id = " + id);
-
                     if (id > 0) {
                         Showable newParent = parent.getShowableById(id);
-
-                        Log.i("ON RECEIVE ||||| " , "newParent = " + newParent);
-
                         if (newParent != null) {
-                            parent = newParent;
-                            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
-                            listView.setAdapter(null);
-                            listView.setAdapter(adapter);
-                            adapter.notifyDataSetChanged();
+                            changeParent(newParent);
+                            handleBackArrow();
                         }
                     }
                 }
@@ -117,6 +121,73 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(changeShowableReceiver);
     }
 
+    private void fillHeaders() {
+        if (parent.getName() != null && !parent.getName().isEmpty()) {
+            String fullName = "";
+            if (ShowableType.STORE_KEEPER == parent.getShowableType()) {
+                fullName = getResources().getString(R.string.show_desc_storekeeper) + ": ";
+                fullName = fullName.toUpperCase();
+            }
+            else if (ShowableType.STORE == parent.getShowableType()) {
+                fullName = getResources().getString(R.string.show_desc_store) + ": ";
+                fullName = fullName.toUpperCase();
+            }
+            fullName = fullName + parent.getName();
+            header.setText(fullName.trim());
+        }
+
+
+        if (parent.getComment() != null && !parent.getComment().isEmpty()) {
+            comment.setText(parent.getComment());
+            swapHeight(comment, false);
+        }
+        else {
+            swapHeight(comment, true);
+        }
+
+        String fullClassifiers = Util.formatClassifiers(parent, getApplicationContext());
+
+        if (!fullClassifiers.isEmpty()) {
+            classifiers.setText(fullClassifiers.trim());
+            swapHeight(classifiers, false);
+            classifiers.setBackgroundColor(getResources().getColor(R.color.gray_2));
+        }
+        else {
+            swapHeight(classifiers, true);
+            classifiers.setBackgroundColor(getResources().getColor(R.color.white_zero));
+        }
+    }
+
+    private void handleBackArrow() {
+        if (ShowableType.STORE_KEEPER == parent.getShowableType()) {
+            backArrow.setVisibility(View.INVISIBLE);
+            backArrow.setClickable(false);
+        }
+        else {
+            backArrow.setVisibility(View.VISIBLE);
+            backArrow.setClickable(true);
+        }
+    }
+
+    private void changeParent(Showable newParent) {
+        parent = newParent;
+        fillHeaders();
+        adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
+        listView.setAdapter(adapter);
+        adapter.notifyDataSetChanged();
+    }
+
+    private void swapHeight(View view, boolean zero) {
+        ViewGroup.LayoutParams params = view.getLayoutParams();
+        if (zero) {
+            params.height = 0;
+        }
+        else {
+            params.height = ConstraintLayout.LayoutParams.WRAP_CONTENT;
+        }
+        view.setLayoutParams(params);
+    }
+
     private void emulateData() {
 
         Field[] fields = R.raw.class.getFields();
@@ -125,14 +196,14 @@ public class MainActivity extends AppCompatActivity {
             copyFileToFolder(Data.photoFolder, fl.getName());
         }
 
-        Showable store1 = Store.getInstance(Data.storeKeeper, "Традиция номер один");
+        Showable store1 = Store.getInstance(parent, "Традиция номер один");
 
-        store1.setComment("Comment store-1");
+        store1.setComment("Базовый вариант Традиции для всех регионов");
         store1.setPreview("shop_trad_1_step1_b_preview.jpg");
         store1.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
-        store1.addClassifier(new ClassifierRegion("Приволжский регион"));
-        store1.addClassifier(new ClassifierRegion("Центральный регион"));
-        store1.addClassifier(new ClassifierRegion("Южный регион"));
+        store1.addClassifier(new ClassifierRegion("Приволжский"));
+        store1.addClassifier(new ClassifierRegion("Центральный"));
+        store1.addClassifier(new ClassifierRegion("Южный"));
 
         Classifier clStep0 = new ClassifierStep("0");
 
@@ -146,33 +217,30 @@ public class MainActivity extends AppCompatActivity {
         st1_shot2.setImage("shop_trad_1_step0_b.jpg");
         st1_shot2.addClassifier(clStep0);
 
-        Showable st1_shot3 = Shot.getInstance(store1, "Общий вид POPM в Шаге-1");
+        Showable st1_shot3 = Shot.getInstance(store1, "Все POPM в Шаге-0");
         st1_shot3.setPreview("shop_trad_1_step0_popm_1_preview.jpg");
         st1_shot3.setImage("shop_trad_1_step0_popm_1.jpg");
         st1_shot3.addClassifier(clStep0);
 
-        for (Showable sh : store1.getShowables()) {
-            Log.i("SHOWBLES ||| ", " " + sh);
-        }
 
 
-        Showable store2 = store1.cloneMe(Data.storeKeeper);
+        Showable store2 = store1.cloneMe(parent);
         store2.setName("Традиция номер два упрощенная");
         store2.setPreview("shop_trad_1_step1_b_preview.jpg");
         store2.clearClassifiers();
         store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
-        store2.addClassifier(new ClassifierRegion("Сибирский регион"));
-        store2.addClassifier(new ClassifierRegion("Дальневосточный регион"));
+        store2.addClassifier(new ClassifierRegion("Сибирский"));
+        store2.addClassifier(new ClassifierRegion("Дальневосточный"));
 
 
-        Showable store3 = Store.getInstance(Data.storeKeeper, "Мини-маркет первый");
+        Showable store3 = Store.getInstance(parent, "Мини-маркет первый");
         store3.setComment("Comment store-3");
         store3.setPreview("shop_minimarket_1_step3_b_preview.jpg");
         store3.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_2)));
 
-        Showable store4 = Store.getInstance(Data.storeKeeper, "Store-4");
+        Showable store4 = Store.getInstance(parent, "Store-4");
 
-        Showable store5 = Store.getInstance(Data.storeKeeper, "Store-5");
+        Showable store5 = Store.getInstance(parent, "Store-5");
         store5.setComment("Comment store-5");
 
 

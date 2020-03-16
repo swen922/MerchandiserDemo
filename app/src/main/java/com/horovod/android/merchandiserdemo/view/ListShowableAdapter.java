@@ -20,7 +20,9 @@ import com.horovod.android.merchandiserdemo.R;
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 import com.horovod.android.merchandiserdemo.data.Data;
+import com.horovod.android.merchandiserdemo.data.Util;
 import com.horovod.android.merchandiserdemo.showable.Showable;
+import com.horovod.android.merchandiserdemo.showable.ShowableType;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
 
@@ -48,9 +50,6 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
         final Showable showable = getItem(position);
 
-        Log.i("GET VIEW ||||| " , "showable = " + showable);
-
-
         ViewHolder viewHolder;
         LayoutInflater inflater = (LayoutInflater) myContext.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
@@ -69,55 +68,11 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
         viewHolder.header.setText(showable.getName());
 
-        StringBuilder sb = new StringBuilder("");
+        String formatedClassifiers = Util.formatClassifiers(showable, myContext);
 
-        if (!showable.getClassifiers().isEmpty()) {
-            // Классификаторы по формату торговли всегда идут первыми, и добавляются все, которые есть
-            // (в реальности обычно будет только один, потому что магазин не может быть
-            // одновременно универсамом и традицией, например...)
-            List<Classifier> clFORMAT = showable.getClassifiersByType(ClassifierType.FORMAT);
-            if (!clFORMAT.isEmpty()) {
-                for (Classifier clFR : clFORMAT) {
-                    sb.append("\n").append(myContext.getResources().getString(R.string.class_desc_format).toUpperCase()).append(" ");
-                    sb.append(clFR.getName());
-                }
-            }
+        viewHolder.comment.setText(formatedClassifiers);
 
-            // Классификатор по шагу тоже ставим вперед, потому что он важен для Shot'ов
-            List<Classifier> clSTEP = showable.getClassifiersByType(ClassifierType.STEP);
-            if (!clSTEP.isEmpty()) {
-                for (Classifier clST : clSTEP) {
-                    sb.append("\n").append(myContext.getResources().getString(R.string.class_desc_step).toUpperCase()).append(" ");
-                    sb.append(clST.getName());
-                }
-            }
-
-            // А вот остальные классификаторы могут быть по несколько и по много в одном магазине
-            // поэтому по ним ставим ограничение вручную: 2 штуки показываем, а далее – многоточие
-            for (ClassifierType type : ClassifierType.values()) {
-                if (type != ClassifierType.FORMAT && type != ClassifierType.STEP) {
-                    List<Classifier> list = showable.getClassifiersByType(type);
-                    if (!list.isEmpty()) {
-
-                        sb.append("\n").append(type.getHeader(myContext.getResources()).toUpperCase()).append(" ");
-                        if (list.size() > 2) {
-                            int another = list.size() - 2;
-                            sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName()).append(", ");
-                            sb.append(myContext.getResources().getString(R.string.another)).append(" ").append(another).append("...");
-                        }
-                        else if (list.size() == 2) {
-                            sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName());
-                        }
-                        else {
-                            sb.append(list.get(0).getName());
-                        }
-                    }
-                }
-            }
-        }
-        viewHolder.comment.setText(sb.toString().trim());
-
-        if (!sb.toString().isEmpty()) {
+        if (!formatedClassifiers.isEmpty()) {
             setLayoutParamsHeight(viewHolder.comment, ConstraintLayout.LayoutParams.WRAP_CONTENT);
         }
         else {
@@ -168,12 +123,17 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
             @Override
             public void onClick(View v) {
 
-                Intent intent = new Intent(Data.INTENT_REPLACE_SHOWABLE);
-                intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
-                myContext.sendBroadcast(intent);
+                if (ShowableType.STORE == showable.getShowableType() && showable.getIdNumber() > 0) {
+                    Intent intent = new Intent(Data.INTENT_REPLACE_SHOWABLE);
+                    intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
+                    myContext.sendBroadcast(intent);
 
-                Log.i("ON CLICK ||||| " , "intent = " + intent);
-                Log.i("ON CLICK ||||| " , "showable.getIdNumber = " + showable.getIdNumber());
+                    /*Log.i("ON CLICK ||||| " , "intent = " + intent);
+                    Log.i("ON CLICK ||||| " , "showable.getIdNumber = " + showable.getIdNumber());*/
+                }
+                else if (ShowableType.SHOT == showable.getShowableType() && showable.getIdNumber() > 0) {
+
+                }
 
             }
         });

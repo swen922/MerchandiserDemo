@@ -1,5 +1,7 @@
 package com.horovod.android.merchandiserdemo.showable;
 
+import android.util.Log;
+
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 
@@ -8,7 +10,12 @@ import java.util.List;
 
 public class StoreKeeper implements Showable {
 
+    private String name = "";
     private List<Showable> showables = new ArrayList<>();
+
+    public StoreKeeper(String name) {
+        this.name = name;
+    }
 
     @Override
     public int getIdNumber() {
@@ -47,12 +54,14 @@ public class StoreKeeper implements Showable {
 
     @Override
     public String getName() {
-        return null;
+        return this.name;
     }
 
     @Override
     public void setName(String name) {
-
+        if (name != null) {
+            this.name = name;
+        }
     }
 
     @Override
@@ -67,7 +76,7 @@ public class StoreKeeper implements Showable {
 
     @Override
     public List<Classifier> getClassifiers() {
-        return null;
+        return new ArrayList<>();
     }
 
     @Override
