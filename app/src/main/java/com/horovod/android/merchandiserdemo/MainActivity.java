@@ -20,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
+import com.horovod.android.merchandiserdemo.classifier.ClassifierBrand;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierFormat;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierRegion;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierStep;
@@ -121,6 +122,19 @@ public class MainActivity extends AppCompatActivity {
         unregisterReceiver(changeShowableReceiver);
     }
 
+    @Override
+    public void onBackPressed() {
+        //super.onBackPressed();
+        if (ShowableType.STORE_KEEPER != parent.getShowableType()) {
+            Showable newParent = parent.getParent();
+            changeParent(newParent);
+            handleBackArrow();
+        }
+        else {
+            super.onBackPressed();
+        }
+    }
+
     private void fillHeaders() {
         if (parent.getName() != null && !parent.getName().isEmpty()) {
             String fullName = "";
@@ -145,7 +159,13 @@ public class MainActivity extends AppCompatActivity {
             swapHeight(comment, true);
         }
 
-        String fullClassifiers = Util.formatClassifiers(parent, getApplicationContext());
+        /** Высчитываем количество символов, которое помещается в одну строку classifiers,
+         * причем считаем только один раз и в других случаях применяем сохраненный результат */
+        if (Data.maxLengthClassifiersMain < 0) {
+            calculateLength();
+        }
+
+        String fullClassifiers = Util.formatClassifiers(parent, getApplicationContext(), (Data.maxLengthClassifiersMain - 2));
 
         if (!fullClassifiers.isEmpty()) {
             classifiers.setText(fullClassifiers.trim());
@@ -188,6 +208,14 @@ public class MainActivity extends AppCompatActivity {
         view.setLayoutParams(params);
     }
 
+    private void calculateLength() {
+        String checkLength = getResources().getString(R.string.maxLength);
+        classifiers.setText(checkLength);
+        Data.maxLengthClassifiersMain = classifiers.getPaint().breakText(checkLength, 0, checkLength.length(), true, classifiers.getWidth(), null);
+        classifiers.setText("");
+        Data.maxLengthClassifiersMain = Data.maxLengthClassifiersMain > Data.minLength ? Data.maxLengthClassifiersMain : Data.minLength;
+    }
+
     private void emulateData() {
 
         Field[] fields = R.raw.class.getFields();
@@ -206,6 +234,22 @@ public class MainActivity extends AppCompatActivity {
         store1.addClassifier(new ClassifierRegion("Южный"));
 
         Classifier clStep0 = new ClassifierStep("0");
+        Classifier clStep1 = new ClassifierStep("1");
+
+        Classifier clBrandRossia = new ClassifierBrand("Rossia");
+        clBrandRossia.setComment("Россия - щедрая душа");
+        Classifier clBrandKitKat = new ClassifierBrand("KitKat");
+        clBrandKitKat.setComment("КитКат");
+        Classifier clBrandNUTS = new ClassifierBrand("NUTS");
+        clBrandNUTS.setComment("НАТС");
+        Classifier clBrandNesquik = new ClassifierBrand("Nesquik");
+        clBrandNesquik.setComment("Несквик");
+        Classifier clBrandNescafe = new ClassifierBrand("Nescafe");
+        clBrandNescafe.setComment("Нескафе");
+        Classifier clBranMaggi = new ClassifierBrand("Maggi");
+        clBranMaggi.setComment("Магги");
+        Classifier clBranPurina = new ClassifierBrand("Purina");
+        clBranPurina.setComment("Пурина");
 
         Showable st1_shot1 = Shot.getInstance(store1, "Общий вид магазина");
         st1_shot1.setPreview("shop_trad_1_step0_a_preview.jpg");
@@ -217,16 +261,51 @@ public class MainActivity extends AppCompatActivity {
         st1_shot2.setImage("shop_trad_1_step0_b.jpg");
         st1_shot2.addClassifier(clStep0);
 
-        Showable st1_shot3 = Shot.getInstance(store1, "Все POPM в Шаге-0");
+        Showable st1_shot3 = Shot.getInstance(store1, "Все POPM");
         st1_shot3.setPreview("shop_trad_1_step0_popm_1_preview.jpg");
         st1_shot3.setImage("shop_trad_1_step0_popm_1.jpg");
         st1_shot3.addClassifier(clStep0);
+
+        Showable st1_shot4 = Shot.getInstance(store1, "Планограмма батончиков");
+        st1_shot4.setComment("Бледно окрашенные SKU не обязательны для размещения на данном Шаге. Показан принцип рекомендованной выкладки в случае расширения ассортимента (витрина, UMD).");
+        st1_shot4.setPreview("shop_trad_1_step0_plangr_sticks.jpg");
+        st1_shot4.setImage("shop_trad_1_step0_plangr_sticks.jpg");
+        st1_shot4.addClassifier(clStep0);
+        st1_shot4.addClassifier(clBrandRossia);
+        st1_shot4.addClassifier(clBrandKitKat);
+        st1_shot4.addClassifier(clBrandNUTS);
+        st1_shot4.addClassifier(clBrandNesquik);
+
+        Showable st1_shot5 = Shot.getInstance(store1, "РОРМ для кофе NESCAFÉ");
+        st1_shot5.setPreview("shop_trad_1_popm_coffee.jpg");
+        st1_shot5.setImage("shop_trad_1_popm_coffee.jpg");
+        st1_shot5.addClassifier(clStep0);
+        st1_shot5.addClassifier(clBrandNescafe);
+
+        Showable st1_shot6 = Shot.getInstance(store1, "Общий вид магазина");
+        st1_shot6.setPreview("shop_trad_1_step1_a_preview.jpg");
+        st1_shot6.setImage("shop_trad_1_step1_a.jpg");
+        st1_shot6.addClassifier(clStep1);
+
+        Showable st1_shot7 = Shot.getInstance(store1, "Общий вид всех выкладок");
+        st1_shot7.setPreview("shop_trad_1_step1_b_preview.jpg");
+        st1_shot7.setImage("shop_trad_1_step1_b.jpg");
+        st1_shot7.addClassifier(clStep1);
+
+        Showable st1_shot8 = Shot.getInstance(store1, "Планограмма Магги в дисплеях");
+        st1_shot8.setPreview("shop_trad_1_step1_g_preview.jpg");
+        st1_shot8.setImage("shop_trad_1_step1_g.jpg");
+        st1_shot8.addClassifier(clStep1);
+        st1_shot8.addClassifier(clBranMaggi);
+
+
 
 
 
         Showable store2 = store1.cloneMe(parent);
         store2.setName("Традиция номер два упрощенная");
-        store2.setPreview("shop_trad_1_step1_b_preview.jpg");
+        store2.setComment("");
+        store2.setPreview("shop_trad_1_step0_b_preview.jpg");
         store2.clearClassifiers();
         store2.addClassifier(new ClassifierFormat(getResources().getString(R.string.class_format_1)));
         store2.addClassifier(new ClassifierRegion("Сибирский"));

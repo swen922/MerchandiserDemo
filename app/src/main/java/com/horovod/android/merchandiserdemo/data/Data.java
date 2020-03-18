@@ -21,6 +21,10 @@ public class Data {
 
     public static final String KEY_IDNUMBER = "com.horovod.android.merchandiserdemo.KEY_IDNUMBER";
 
+    public static int maxLengthClassifiersMain = -1;
+    public static int maxLengthCommentList = -1;
+    public static int minLength = 28;
+
 
     /** REAL APP - В реальном приложении не нужно */
     public static int incrementAndGetNewId() {

@@ -11,6 +11,7 @@ import java.util.List;
 public class StoreKeeper implements Showable {
 
     private String name = "";
+    private String comment = "";
     private List<Showable> showables = new ArrayList<>();
 
     public StoreKeeper(String name) {
@@ -66,12 +67,14 @@ public class StoreKeeper implements Showable {
 
     @Override
     public String getComment() {
-        return null;
+        return this.comment;
     }
 
     @Override
     public void setComment(String comment) {
-
+        if (comment != null) {
+            this.comment = comment;
+        }
     }
 
     @Override

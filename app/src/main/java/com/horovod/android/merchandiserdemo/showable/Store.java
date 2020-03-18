@@ -118,7 +118,7 @@ public class Store implements Showable {
 
     @Override
     public void addClassifier(Classifier classifier) {
-        if (classifier != null) {
+        if (classifier != null && !this.classifiers.contains(classifier)) {
             this.classifiers.add(classifier);
         }
     }

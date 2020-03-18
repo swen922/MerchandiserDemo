@@ -28,6 +28,8 @@
     <string name="class_format_6">Открытый рынок</string>
 
     <string name="another">и ещё</string>
+    <string name="maxLength">абвгдеёжзиклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗабвгдеёжзиклмнопрстуфхцчшщъыьэюя</string>
+
 
 
     <string name="show_desc_example_01">Основное хранилище</string>

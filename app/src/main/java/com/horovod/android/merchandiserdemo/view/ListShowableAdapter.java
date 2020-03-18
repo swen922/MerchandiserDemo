@@ -68,7 +68,13 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
         viewHolder.header.setText(showable.getName());
 
-        String formatedClassifiers = Util.formatClassifiers(showable, myContext);
+        /** Высчитываем количество символов, которое помещается в одну строку viewHolder.comment
+         * причем считаем только один раз и в других случаях применяем сохраненный результат */
+        if (Data.maxLengthCommentList < 0) {
+            calculateLength(viewHolder.comment);
+        }
+
+        String formatedClassifiers = Util.formatClassifiers(showable, myContext, (Data.maxLengthCommentList - 2));
 
         viewHolder.comment.setText(formatedClassifiers);
 
@@ -146,6 +152,14 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.height = height;
         view.setLayoutParams(params);
+    }
+
+    private void calculateLength(TextView textView) {
+        String checkLength = myContext.getString(R.string.maxLength);
+        textView.setText(checkLength);
+        Data.maxLengthCommentList = textView.getPaint().breakText(checkLength, 0, checkLength.length(), true, textView.getWidth(), null);
+        textView.setText("");
+        Data.maxLengthCommentList = Data.maxLengthCommentList > Data.minLength ? Data.maxLengthCommentList : Data.minLength;
     }
 
     /*private Bitmap getBitmap(ImageView imageView) {

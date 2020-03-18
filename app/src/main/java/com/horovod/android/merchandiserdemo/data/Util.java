@@ -1,6 +1,7 @@
 package com.horovod.android.merchandiserdemo.data;
 
 import android.content.Context;
+import android.util.Log;
 
 import com.horovod.android.merchandiserdemo.R;
 import com.horovod.android.merchandiserdemo.classifier.*;
@@ -13,7 +14,7 @@ public class Util {
 
 
     // Метод вытащен сюда, потому что код один и тот же для адаптера списка и для общего макета страинцы
-    public static String formatClassifiers(Showable showable, Context myContext) {
+    public static String formatClassifiers(Showable showable, Context myContext, int max) {
 
         StringBuilder sb = new StringBuilder("");
 
@@ -44,12 +45,45 @@ public class Util {
                 if (type != ClassifierType.FORMAT && type != ClassifierType.STEP) {
                     List<Classifier> list = showable.getClassifiersByType(type);
                     if (!list.isEmpty()) {
-
                         sb.append("\n").append(type.getHeader(myContext.getResources()).toUpperCase()).append(" ");
+
                         if (list.size() > 2) {
-                            int another = list.size() - 2;
-                            sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName()).append("...(+");
-                            sb.append(another).append(")");
+
+                            /** Рассчитываем включить в строчку не менее двух классификаторов.
+                             * Но при этом, если классификаторы короткие, и есть еще место,
+                             * то добавляем еще классификаторов из списка, пока не превысит указанное
+                             * максимальное кол-во символов (аргумент int max)*/
+
+                            max = max - 6;
+                            max = max < Data.minLength ? Data.minLength : max; // Чисто на всякий случай
+                            StringBuilder sb2 = new StringBuilder("");
+                            int counter = list.size();
+
+                            while (counter >= 2) {
+                                sb2 = new StringBuilder("");
+
+                                for (int i = 0; i < counter; i++) {
+                                    sb2.append(list.get(i).getName()).append(", ");
+                                }
+                                counter--;
+                                String input = sb2.toString();
+                                input = input.trim();
+                                input = input.substring(0, (input.length() - 1));
+                                sb2 = new StringBuilder(input);
+
+                                if (goodLength(input, max)) {
+                                    break;
+                                }
+                            }
+
+                            int another = list.size() - counter - 1;
+                            if (another > 0) {
+                                sb2.append("...(+");
+                                sb2.append(another).append(")");
+                            }
+
+                            sb.append(sb2.toString());
+
                         }
                         else if (list.size() == 2) {
                             sb.append(list.get(0).getName()).append(", ").append(list.get(1).getName());
@@ -63,5 +97,17 @@ public class Util {
         }
         return sb.toString().trim();
     }
+
+    private static boolean goodLength(String input, int max) {
+
+        /*Log.i("GOOD LENGTH ||| ", "input.length() = " + input.length());
+        Log.i("GOOD LENGTH ||| ", "max = " + max);*/
+
+        if (input.trim().length() < max) {
+            return true;
+        }
+        return false;
+    }
+
 
 }
