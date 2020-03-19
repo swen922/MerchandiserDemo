@@ -14,6 +14,8 @@ public interface Showable {
     public void setPreview(String preview);
     public String getImage();
     public void setImage(String image);
+    public boolean isHorizontal();
+    public void setHorizontal(boolean horizontal);
     public String getName();
     public void setName(String name);
     public String getComment();

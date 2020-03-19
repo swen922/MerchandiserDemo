@@ -70,6 +70,16 @@ public class Store implements Showable {
     }
 
     @Override
+    public boolean isHorizontal() {
+        return false;
+    }
+
+    @Override
+    public void setHorizontal(boolean horizontal) {
+
+    }
+
+    @Override
     public String getName() {
         return this.name;
     }
@@ -135,16 +145,19 @@ public class Store implements Showable {
 
     @Override
     public Showable getShowableById(int id) {
-        Showable result = null;
+        if (id == this.idNumber) {
+            return this;
+        }
         if (!this.showables.isEmpty()) {
+            Showable result = null;
             for (Showable sh : showables) {
-                if (sh.getIdNumber() == id) {
-                    result = sh;
-                    break;
+                result = sh.getShowableById(id);
+                if (result != null) {
+                    return result;
                 }
             }
         }
-        return result;
+        return null;
     }
 
     @Override

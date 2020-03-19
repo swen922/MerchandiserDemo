@@ -2,6 +2,7 @@
 <android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/container_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_1"
@@ -88,8 +89,21 @@
         android:src="@drawable/ic_fast_rewind_2"
         android:scaleType="fitCenter"
 
-        app:layout_constraintLeft_toLeftOf="@id/main_guide_vertical_2"
-        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/main_guide_vertical_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="@id/main_guide_horiz_1"
+        />
+
+    <Spinner
+        android:id="@+id/main_spinner_keepers"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+
+        android:background="@null"
+
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="@id/main_guide_vertical_1"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/main_guide_horiz_1"
         />
@@ -117,8 +131,8 @@
         app:autoSizeMaxTextSize="18sp"
         app:autoSizeStepGranularity="1sp"
 
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="@id/main_guide_vertical_2"
+        app:layout_constraintLeft_toLeftOf="@id/main_guide_vertical_1"
+        app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/main_guide_horiz_1"
         />

@@ -4,23 +4,31 @@ import android.util.Log;
 
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
+import com.horovod.android.merchandiserdemo.data.Data;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class StoreKeeper implements Showable {
 
+    private int idNumber = -1;
     private String name = "";
     private String comment = "";
     private List<Showable> showables = new ArrayList<>();
 
-    public StoreKeeper(String name) {
-        this.name = name;
+    private StoreKeeper() {
+    }
+
+    public static Showable getInstance(String name) {
+        Showable storeKeeper = new StoreKeeper();
+        storeKeeper.setIdNumber(Data.incrementAndGetNewId());
+        storeKeeper.setName(name);
+        return storeKeeper;
     }
 
     @Override
     public int getIdNumber() {
-        return -1;
+        return this.idNumber;
     }
 
     @Override
@@ -30,7 +38,9 @@ public class StoreKeeper implements Showable {
 
     @Override
     public void setIdNumber(int newIdNumber) {
-
+        if (newIdNumber > 0) {
+            this.idNumber = newIdNumber;
+        }
     }
 
     @Override
@@ -50,6 +60,15 @@ public class StoreKeeper implements Showable {
 
     @Override
     public void setImage(String image) {
+    }
+
+    @Override
+    public boolean isHorizontal() {
+        return false;
+    }
+
+    @Override
+    public void setHorizontal(boolean horizontal) {
 
     }
 
@@ -108,16 +127,19 @@ public class StoreKeeper implements Showable {
 
     @Override
     public Showable getShowableById(int id) {
-        Showable result = null;
+        if (id == this.idNumber) {
+            return this;
+        }
         if (!this.showables.isEmpty()) {
+            Showable result = null;
             for (Showable sh : showables) {
-                if (sh.getIdNumber() == id) {
-                    result = sh;
-                    break;
+                result = sh.getShowableById(id);
+                if (result != null) {
+                    return result;
                 }
             }
         }
-        return result;
+        return null;
     }
 
     @Override

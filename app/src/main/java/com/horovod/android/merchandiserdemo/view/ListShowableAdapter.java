@@ -6,6 +6,8 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -74,7 +76,7 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
             calculateLength(viewHolder.comment);
         }
 
-        String formatedClassifiers = Util.formatClassifiers(showable, myContext, (Data.maxLengthCommentList - 2));
+        String formatedClassifiers = Util.formatClassifiers(showable, myContext, (Data.maxLengthCommentList - 1));
 
         viewHolder.comment.setText(formatedClassifiers);
 
@@ -112,9 +114,22 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
 
                 Picasso.get().load(file).into(viewHolder.imageView);
                 Bitmap bitmap = getBitmap(file);
-                //viewHolder.imageView.setImageBitmap(bitmap); – так очень плохо загружается на странице, появляется не сразу
+
+                // Этот мелкий блок кода – для установки ориентации Шота
+                if (bitmap != null) {
+                    int realWidth = bitmap.getWidth();
+                    int realHeight = bitmap.getHeight();
+                    if (realWidth > realHeight) {
+                        showable.setHorizontal(true);
+                    }
+                    else {
+                        showable.setHorizontal(false);
+                    }
+                }
+
                 int imageHeight = getImageHeight(bitmap);
                 setLayoutParamsHeight(viewHolder.imageView, imageHeight);
+                //viewHolder.imageView.setImageBitmap(bitmap); – так очень плохо загружается на странице, появляется не сразу
 
             }
             else {
@@ -133,12 +148,11 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                     Intent intent = new Intent(Data.INTENT_REPLACE_SHOWABLE);
                     intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
                     myContext.sendBroadcast(intent);
-
-                    /*Log.i("ON CLICK ||||| " , "intent = " + intent);
-                    Log.i("ON CLICK ||||| " , "showable.getIdNumber = " + showable.getIdNumber());*/
                 }
                 else if (ShowableType.SHOT == showable.getShowableType() && showable.getIdNumber() > 0) {
-
+                    Intent intent = new Intent(Data.INTENT_SHOW_PHOTO);
+                    intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
+                    myContext.sendBroadcast(intent);
                 }
 
             }

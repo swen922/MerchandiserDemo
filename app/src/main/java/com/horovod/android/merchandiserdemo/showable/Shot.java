@@ -14,6 +14,7 @@ public class Shot implements Showable {
     private int idNumber = -1;
     private String preview = "";
     private String image = "";
+    private boolean horisontal = true;
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
@@ -70,6 +71,16 @@ public class Shot implements Showable {
             this.image = image;
         }
 
+    }
+
+    @Override
+    public boolean isHorizontal() {
+        return this.horisontal;
+    }
+
+    @Override
+    public void setHorizontal(boolean horizontal) {
+        this.horisontal = horizontal;
     }
 
     @Override
@@ -138,6 +149,9 @@ public class Shot implements Showable {
 
     @Override
     public Showable getShowableById(int id) {
+        if (id == this.idNumber) {
+            return this;
+        }
         return null;
     }
 

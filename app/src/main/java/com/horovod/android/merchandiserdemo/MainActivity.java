@@ -4,19 +4,18 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.os.Environment;
 import android.support.constraint.ConstraintLayout;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.DisplayMetrics;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.WindowManager;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.horovod.android.merchandiserdemo.classifier.Classifier;
@@ -31,32 +30,34 @@ import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.horovod.android.merchandiserdemo.showable.ShowableType;
 import com.horovod.android.merchandiserdemo.showable.Store;
 import com.horovod.android.merchandiserdemo.showable.StoreKeeper;
+import com.horovod.android.merchandiserdemo.view.KeepersSpinnerAdapter;
 import com.horovod.android.merchandiserdemo.view.ListShowableAdapter;
-import com.squareup.picasso.Picasso;
+import com.horovod.android.merchandiserdemo.view.ShotFragment;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.lang.reflect.Field;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
     private ListView listView;
     private ArrayAdapter<Showable> adapter;
+    private ArrayAdapter<Showable> keeperSpinnerAdapter;
     private Showable parent;
 
     private TextView header;
     private ImageView backArrow;
+    private Spinner spinnerKeepers;
     private TextView comment;
     private TextView classifiers;
 
+    private FragmentManager myFragmentManager;
+    private WindowManager myWindowManager;
+
     private BroadcastReceiver changeShowableReceiver;
+    private BroadcastReceiver photoFragmentReceiver;
 
 
     @Override
@@ -64,7 +65,11 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        parent = new StoreKeeper(getResources().getString(R.string.show_desc_example_01));
+        parent = StoreKeeper.getInstance(getResources().getString(R.string.show_desc_example_01));
+        Data.addKeeper(parent);
+
+        myFragmentManager = getSupportFragmentManager();
+        myWindowManager = getWindowManager();
 
         emulateData();
 
@@ -73,6 +78,7 @@ public class MainActivity extends AppCompatActivity {
 
         header = findViewById(R.id.main_header);
         backArrow = findViewById(R.id.main_icon_back);
+        spinnerKeepers = findViewById(R.id.main_spinner_keepers);
         comment = findViewById(R.id.main_comment);
         classifiers = findViewById(R.id.main_classifiers);
 
@@ -90,10 +96,15 @@ public class MainActivity extends AppCompatActivity {
         handleBackArrow();
 
         if (adapter == null) {
-            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), getWindowManager());
+            adapter = new ListShowableAdapter(getApplication(), R.layout.list_showable_item, parent.getShowables(), myWindowManager);
         }
         listView.setAdapter(adapter);
         adapter.notifyDataSetChanged();
+
+        if (keeperSpinnerAdapter == null) {
+            keeperSpinnerAdapter = new KeepersSpinnerAdapter(getApplicationContext(), R.layout.keeper_spinner_row, R.layout.keeper_spinner_row_dropdown, Data.getKeepersList());
+        }
+        spinnerKeepers.setAdapter(keeperSpinnerAdapter);
 
         if (changeShowableReceiver == null) {
             changeShowableReceiver = new BroadcastReceiver() {
@@ -111,8 +122,33 @@ public class MainActivity extends AppCompatActivity {
             };
         }
 
+        if (photoFragmentReceiver == null) {
+            photoFragmentReceiver = new BroadcastReceiver() {
+                @Override
+                public void onReceive(Context context, Intent intent) {
+
+                    int id = intent.getIntExtra(Data.KEY_IDNUMBER, -1);
+
+                    if (id > 0) {
+                        FragmentTransaction ft = myFragmentManager.beginTransaction();
+                        Data.shotFragment = new ShotFragment();
+                        Data.shotFragment.setMyFragmentManager(myFragmentManager, getApplicationContext());
+
+                        Bundle args = new Bundle();
+                        args.putInt(Data.KEY_IDNUMBER, id);
+                        Data.shotFragment.setArguments(args);
+
+                        ft.add(R.id.container_main, Data.shotFragment, null);
+                        ft.commit();
+                    }
+                }
+            };
+        }
+
         IntentFilter changeShowableFilter = new IntentFilter(Data.INTENT_REPLACE_SHOWABLE);
         registerReceiver(changeShowableReceiver, changeShowableFilter);
+        IntentFilter photoFragmentFilter = new IntentFilter(Data.INTENT_SHOW_PHOTO);
+        registerReceiver(photoFragmentReceiver, photoFragmentFilter);
 
     }
 
@@ -120,6 +156,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(changeShowableReceiver);
+        unregisterReceiver(photoFragmentReceiver);
     }
 
     @Override
@@ -165,7 +202,7 @@ public class MainActivity extends AppCompatActivity {
             calculateLength();
         }
 
-        String fullClassifiers = Util.formatClassifiers(parent, getApplicationContext(), (Data.maxLengthClassifiersMain - 2));
+        String fullClassifiers = Util.formatClassifiers(parent, getApplicationContext(), (Data.maxLengthClassifiersMain - 1));
 
         if (!fullClassifiers.isEmpty()) {
             classifiers.setText(fullClassifiers.trim());
@@ -182,10 +219,14 @@ public class MainActivity extends AppCompatActivity {
         if (ShowableType.STORE_KEEPER == parent.getShowableType()) {
             backArrow.setVisibility(View.INVISIBLE);
             backArrow.setClickable(false);
+            spinnerKeepers.setVisibility(View.VISIBLE);
+            spinnerKeepers.setClickable(true);
         }
         else {
             backArrow.setVisibility(View.VISIBLE);
             backArrow.setClickable(true);
+            spinnerKeepers.setVisibility(View.INVISIBLE);
+            spinnerKeepers.setClickable(false);
         }
     }
 
