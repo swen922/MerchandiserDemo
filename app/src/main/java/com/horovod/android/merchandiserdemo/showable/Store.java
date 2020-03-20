@@ -13,6 +13,9 @@ public class Store implements Showable {
 
     private int idNumber = -1;
     private String preview = "";
+    private int previewWidth = -1;
+    private int previewHeight = -1;
+    private boolean isVisible = true;
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
@@ -70,12 +73,42 @@ public class Store implements Showable {
     }
 
     @Override
-    public boolean isHorizontal() {
-        return false;
+    public int getPreviewWidth() {
+        return this.previewWidth;
     }
 
     @Override
-    public void setHorizontal(boolean horizontal) {
+    public void setPreviewWidth(int width) {
+        this.previewWidth = width;
+    }
+
+    @Override
+    public int getPreviewHeight() {
+        return this.previewHeight;
+    }
+
+    @Override
+    public void setPreviewHeight(int height) {
+        this.previewHeight = height;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.isVisible;
+    }
+
+    @Override
+    public void setVisible(boolean show) {
+        this.isVisible = show;
+    }
+
+    @Override
+    public ShotOrientation getOrientation() {
+        return null;
+    }
+
+    @Override
+    public void setShotOrientation(ShotOrientation orientation) {
 
     }
 

@@ -23,6 +23,7 @@ import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 import com.horovod.android.merchandiserdemo.data.Data;
 import com.horovod.android.merchandiserdemo.data.Util;
+import com.horovod.android.merchandiserdemo.showable.ShotOrientation;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.horovod.android.merchandiserdemo.showable.ShowableType;
 import com.squareup.picasso.Picasso;
@@ -113,24 +114,47 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                  * В общем, вставлять только через Пикассо! */
 
                 Picasso.get().load(file).into(viewHolder.imageView);
-                Bitmap bitmap = getBitmap(file);
+                //viewHolder.imageView.setImageBitmap(bitmap); – так очень плохо загружается на странице, появляется не сразу
 
-                // Этот мелкий блок кода – для установки ориентации Шота
-                if (bitmap != null) {
-                    int realWidth = bitmap.getWidth();
-                    int realHeight = bitmap.getHeight();
-                    if (realWidth > realHeight) {
-                        showable.setHorizontal(true);
+                int imageHeight = -1;
+                Bitmap bitmap = null;
+                if (showable.getPreviewWidth() > 0 && showable.getPreviewHeight() > 0) {
+                    imageHeight = getImageHeight(showable.getPreviewWidth(), showable.getPreviewHeight());
+                }
+                else {
+                    bitmap = getBitmap(file);
+
+                    if (bitmap != null) {
+                        showable.setPreviewWidth(bitmap.getWidth());
+                        showable.setPreviewHeight(bitmap.getHeight());
                     }
-                    else {
-                        showable.setHorizontal(false);
+                    imageHeight = getImageHeight(bitmap);
+                }
+                if (imageHeight > 0) {
+                    setLayoutParamsHeight(viewHolder.imageView, imageHeight);
+                }
+
+                // Плюс мелкий блок кода для установки ориентации
+                if (ShotOrientation.UNKNOWN == showable.getOrientation()) {
+                    if (bitmap == null) {
+                        bitmap = getBitmap(file);
+                    }
+                    if (bitmap != null) {
+                        int realWidth = bitmap.getWidth();
+                        int realHeight = bitmap.getHeight();
+                        if (realWidth > realHeight) {
+                            showable.setShotOrientation(ShotOrientation.HORIZONTAL);
+                        }
+                        else {
+                            showable.setShotOrientation(ShotOrientation.VERTICAL);
+                        }
                     }
                 }
 
-                int imageHeight = getImageHeight(bitmap);
-                setLayoutParamsHeight(viewHolder.imageView, imageHeight);
-                //viewHolder.imageView.setImageBitmap(bitmap); – так очень плохо загружается на странице, появляется не сразу
-
+                Log.i("LIST ADAPTER ||| ", "showable name = " + showable.getName());
+                Log.i("LIST ADAPTER ||| ", "showable orientation = " + showable.getOrientation());
+                Log.i("LIST ADAPTER ||| ", "previewWidth = " + showable.getPreviewWidth() + ", previewHeight = " + showable.getPreviewHeight());
+                Log.i("LIST ADAPTER ||| ", "--------------------------------");
             }
             else {
                 setLayoutParamsHeight(viewHolder.imageView, 0);
@@ -259,10 +283,6 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
         double heightScreen = metrics.heightPixels;
         double result = heightScreen / 3;
 
-        /*Log.i("IMAGE HEIGHT ||| ", "widthScreen = " + widthScreen);
-        Log.i("IMAGE HEIGHT ||| ", "heightScreen = " + heightScreen);
-        Log.i("IMAGE HEIGHT ||| ", "resultFirst = " + result);*/
-
         if (bm != null) {
             double widthFile = bm.getWidth();
             double heightFile = bm.getHeight();
@@ -271,17 +291,25 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
             double heightScaled = heightFile * ratio;
             double limit = 600 < (heightScreen/3) ? 600 : (heightScreen/3);
             result = heightScaled < limit ? heightScaled : limit;
-
-            /*Log.i("IMAGE HEIGHT ||| ", "widthFile = " + widthFile);
-            Log.i("IMAGE HEIGHT ||| ", "heightFile = " + heightFile);
-            Log.i("IMAGE HEIGHT ||| ", "ratio = " + ratio);
-            Log.i("IMAGE HEIGHT ||| ", "heightScaled = " + heightScaled);
-
-            Log.i("IMAGE HEIGHT ||| ", "limit = " + limit);
-            Log.i("IMAGE HEIGHT ||| ", "result = " + result);
-            Log.i("---------------- ", "-------------------------------------------------");*/
-
         }
+        return (int) result;
+    }
+
+    private int getImageHeight(int bitmapWidth, int bitmapHeight) {
+
+        DisplayMetrics metrics = new DisplayMetrics();
+        windowManager.getDefaultDisplay().getMetrics(metrics);
+        double widthScreen = metrics.widthPixels;
+        double heightScreen = metrics.heightPixels;
+        double result = heightScreen / 3;
+
+        double widthFile = bitmapWidth;
+        double heightFile = bitmapHeight;
+
+        double ratio = widthScreen / widthFile;
+        double heightScaled = heightFile * ratio;
+        double limit = 600 < (heightScreen/3) ? 600 : (heightScreen/3);
+        result = heightScaled < limit ? heightScaled : limit;
 
         return (int) result;
     }

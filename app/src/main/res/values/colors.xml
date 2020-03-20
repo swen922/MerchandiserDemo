@@ -6,6 +6,7 @@
 
     <color name="gray_0">#606060</color>
     <color name="gray_1">#808080</color>
+    <color name="gray_1_10pc">#1A808080</color>
     <color name="gray_2">#E0E0E0</color>
     <color name="gray_3">#ECECEC</color>
     <color name="gray_4">#A4A4A4</color>

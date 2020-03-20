@@ -14,7 +14,10 @@ public class Shot implements Showable {
     private int idNumber = -1;
     private String preview = "";
     private String image = "";
-    private boolean horisontal = true;
+    private int previewWidth = -1;
+    private int previewHeight = -1;
+    private boolean isVisible = true;
+    private ShotOrientation myOrientation = ShotOrientation.UNKNOWN;
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
@@ -70,17 +73,46 @@ public class Shot implements Showable {
         if (image != null) {
             this.image = image;
         }
-
     }
 
     @Override
-    public boolean isHorizontal() {
-        return this.horisontal;
+    public int getPreviewWidth() {
+        return this.previewWidth;
     }
 
     @Override
-    public void setHorizontal(boolean horizontal) {
-        this.horisontal = horizontal;
+    public int getPreviewHeight() {
+        return this.previewHeight;
+    }
+
+    @Override
+    public boolean isVisible() {
+        return this.isVisible;
+    }
+
+    @Override
+    public void setVisible(boolean show) {
+        this.isVisible = show;
+    }
+
+    @Override
+    public ShotOrientation getOrientation() {
+        return this.myOrientation;
+    }
+
+    @Override
+    public void setPreviewWidth(int width) {
+        this.previewWidth = width;
+    }
+
+    @Override
+    public void setShotOrientation(ShotOrientation orientation) {
+        this.myOrientation = orientation;
+    }
+
+    @Override
+    public void setPreviewHeight(int height) {
+        this.previewHeight = height;
     }
 
     @Override

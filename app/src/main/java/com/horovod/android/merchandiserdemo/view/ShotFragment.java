@@ -15,9 +15,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.horovod.android.merchandiserdemo.R;
 import com.horovod.android.merchandiserdemo.data.Data;
+import com.horovod.android.merchandiserdemo.showable.ShotOrientation;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.squareup.picasso.Picasso;
 import com.squareup.picasso.Target;
@@ -28,13 +30,21 @@ import java.util.List;
 
 public class ShotFragment extends Fragment {
 
+
     private ImageView imageView;
-    //private String fileName = "";
+
+    private TextView nameTextView;
+    private TextView commentTextView;
+    private ImageView buttonScale;
+    private ImageView buttonClose;
+
+
     private int showableId = -1;
     private Showable myShowable;
 
     private FragmentManager myFragmentManager;
     private Context myContext;
+    private ImageMoveListener imageMoveListener;
 
     public void setMyFragmentManager(FragmentManager fragmentManager, Context context) {
         this.myFragmentManager = fragmentManager;
@@ -46,6 +56,12 @@ public class ShotFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.shot_fragment, container, false);
         imageView = rootView.findViewById(R.id.shot_frag_imageview);
+        nameTextView = rootView.findViewById(R.id.shot_frag_name);
+        commentTextView = rootView.findViewById(R.id.shot_frag_comment);
+        buttonScale = rootView.findViewById(R.id.shot_frag_button_scale);
+        buttonClose = rootView.findViewById(R.id.shot_frag_button_close);
+        imageMoveListener = new ImageMoveListener(imageView);
+        imageView.setOnTouchListener(imageMoveListener);
 
         Bundle args = getArguments();
         if (args != null) {
@@ -58,21 +74,39 @@ public class ShotFragment extends Fragment {
 
         if (myShowable != null) {
             File file = new File(myContext.getFilesDir() + File.separator + Data.photoFolder + File.separator + myShowable.getImage());
-
             if (file.exists()) {
-                if (myShowable.isHorizontal()) {
-                    Picasso.get().load(file).rotate(-90).into(imageView);
-                }
-                else {
+                if (ShotOrientation.VERTICAL == myShowable.getOrientation()) {
                     Picasso.get().load(file).into(imageView);
                 }
+                else {
+                    Picasso.get().load(file).rotate(-90).into(imageView);
+                }
             }
+
+            nameTextView.setText(myShowable.getName());
+            commentTextView.setText(myShowable.getComment());
         }
+
+        buttonScale.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                View moveView = imageMoveListener.getView();
+                moveView.setTranslationX(0);
+                moveView.setTranslationY(0);
+                moveView.setScaleX(1);
+                moveView.setScaleY(1);
+            }
+        });
+
+        buttonClose.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                myFragmentManager.beginTransaction().remove(Data.shotFragment).commit();
+                Data.shotFragment = null;
+            }
+        });
+
         return rootView;
     }
-
-
-
-
 
 }

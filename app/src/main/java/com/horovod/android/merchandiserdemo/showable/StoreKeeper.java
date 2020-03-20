@@ -63,12 +63,42 @@ public class StoreKeeper implements Showable {
     }
 
     @Override
-    public boolean isHorizontal() {
-        return false;
+    public boolean isVisible() {
+        return true;
     }
 
     @Override
-    public void setHorizontal(boolean horizontal) {
+    public void setVisible(boolean show) {
+
+    }
+
+    @Override
+    public int getPreviewWidth() {
+        return -1;
+    }
+
+    @Override
+    public void setPreviewWidth(int width) {
+
+    }
+
+    @Override
+    public int getPreviewHeight() {
+        return -1;
+    }
+
+    @Override
+    public void setPreviewHeight(int height) {
+
+    }
+
+    @Override
+    public ShotOrientation getOrientation() {
+        return null;
+    }
+
+    @Override
+    public void setShotOrientation(ShotOrientation orientation) {
 
     }
 

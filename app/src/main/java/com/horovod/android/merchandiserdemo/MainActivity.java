@@ -162,7 +162,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if (ShowableType.STORE_KEEPER != parent.getShowableType()) {
+        if (Data.shotFragment != null) {
+            myFragmentManager.beginTransaction().remove(Data.shotFragment).commit();
+            Data.shotFragment = null;
+        }
+        else if (ShowableType.STORE_KEEPER != parent.getShowableType()) {
             Showable newParent = parent.getParent();
             changeParent(newParent);
             handleBackArrow();

@@ -15,7 +15,6 @@
     <string name="show_desc_store">Магазин</string>
     <string name="show_desc_shot">Фото</string>
 
-
     <string name="default_header">Заголовок списка</string>
     <string name="default_preview">Просмотровое фото отсутствует</string>
     <string name="classifiers_header">Классификаторы:</string>
@@ -26,6 +25,9 @@
     <string name="class_format_4">Гипермаркет</string>
     <string name="class_format_5">Киоск</string>
     <string name="class_format_6">Открытый рынок</string>
+
+    <string name="button_close">Закрыть</string>
+    <string name="button_scale_100">100%</string>
 
     <string name="another">и ещё</string>
     <string name="maxLength">абвгдеёжзиклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗабвгдеёжзиклмнопрстуфхцчшщъыьэюя</string>
