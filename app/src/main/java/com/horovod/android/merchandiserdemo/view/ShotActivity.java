@@ -1,21 +1,13 @@
 package com.horovod.android.merchandiserdemo.view;
 
-import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
+import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.constraint.ConstraintLayout;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v7.widget.AppCompatTextView;
-import android.util.DisplayMetrics;
-import android.util.Log;
-import android.view.LayoutInflater;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -23,14 +15,10 @@ import com.horovod.android.merchandiserdemo.R;
 import com.horovod.android.merchandiserdemo.data.Data;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
-public class ShotFragment extends Fragment {
-
+public class ShotActivity extends AppCompatActivity {
 
     private ImageView imageView;
     private TextView nameTextView;
@@ -41,40 +29,31 @@ public class ShotFragment extends Fragment {
     private int showableId = -1;
     private Showable myShowable;
 
-    private FragmentManager myFragmentManager;
-    private Context myContext;
     private ImageMoveListener imageMoveListener;
 
-    public void setMyFragmentManager(FragmentManager fragmentManager, Context context) {
-        this.myFragmentManager = fragmentManager;
-        this.myContext = context;
-    }
-
-    @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.shot_fragment, container, false);
-        imageView = rootView.findViewById(R.id.shot_frag_imageview);
-        nameTextView = rootView.findViewById(R.id.shot_frag_name);
-        //nametextViewHoriz = rootView.findViewById(R.id.shot_frag_name_horiz);
-        //nametextViewHoriz = new VerticalTextView(myContext, )
-        commentTextView = rootView.findViewById(R.id.shot_frag_comment);
-        buttonScale = rootView.findViewById(R.id.shot_frag_button_scale);
-        buttonClose = rootView.findViewById(R.id.shot_frag_button_close);
+    protected void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.shot_fragment);
+
+        imageView = findViewById(R.id.shot_frag_imageview);
+        nameTextView = findViewById(R.id.shot_frag_name);
+        commentTextView = findViewById(R.id.shot_frag_comment);
+        buttonScale = findViewById(R.id.shot_frag_button_scale);
+        buttonClose = findViewById(R.id.shot_frag_button_close);
+
         imageMoveListener = new ImageMoveListener(imageView);
         imageView.setOnTouchListener(imageMoveListener);
 
-        Bundle args = getArguments();
-        if (args != null) {
-            showableId = args.getInt(Data.KEY_IDNUMBER, -1);
-        }
+        Intent intent = getIntent();
+        showableId = intent.getIntExtra(Data.KEY_IDNUMBER, -1);
 
         if (showableId > 0) {
             myShowable = Data.getShowableByid(showableId);
         }
 
         if (myShowable != null) {
-            File file = new File(myContext.getFilesDir() + File.separator + Data.photoFolder + File.separator + myShowable.getImage());
+            File file = new File(getApplicationContext().getFilesDir() + File.separator + Data.photoFolder + File.separator + myShowable.getImage());
             if (file.exists()) {
                 /*if (ShotOrientation.VERTICAL == myShowable.getOrientation()) {
                     Picasso.get().load(file).into(imageView);
@@ -82,8 +61,12 @@ public class ShotFragment extends Fragment {
                 else {
                     Picasso.get().load(file).rotate(-90).into(imageView);
                 }*/
+
+                Picasso.get().load(file).into(imageView);
+
             }
 
+            //handleOrientation(myShowable.getOrientation());
             handleTextViews(nameTextView, commentTextView);
         }
 
@@ -98,15 +81,13 @@ public class ShotFragment extends Fragment {
             }
         });
 
-        /*buttonClose.setOnClickListener(new View.OnClickListener() {
+        buttonClose.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                myFragmentManager.beginTransaction().remove(Data.shotFragment).commit();
-                Data.shotFragment = null;
+                finish();
             }
-        });*/
+        });
 
-        return rootView;
     }
 
     private void handleTextViews(TextView nameView, TextView commentView) {
@@ -129,11 +110,20 @@ public class ShotFragment extends Fragment {
     }
 
 
+    /*private void handleOrientation(ShotOrientation orientation) {
+        if (ShotOrientation.HORIZONTAL == orientation) {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+        else {
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        }
+    }*/
+
+
     private void setLayoutParamsHeight(View view, int height) {
         ViewGroup.LayoutParams params = view.getLayoutParams();
         params.height = height;
         view.setLayoutParams(params);
     }
-
 
 }

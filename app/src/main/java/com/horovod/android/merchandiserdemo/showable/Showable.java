@@ -20,8 +20,6 @@ public interface Showable {
     public void setPreviewHeight(int height);
     public boolean isVisible();
     public void setVisible(boolean show);
-    public ShotOrientation getOrientation();
-    public void setShotOrientation(ShotOrientation orientation);
     public String getName();
     public void setName(String name);
     public String getComment();

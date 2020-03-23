@@ -23,7 +23,6 @@ import com.horovod.android.merchandiserdemo.classifier.Classifier;
 import com.horovod.android.merchandiserdemo.classifier.ClassifierType;
 import com.horovod.android.merchandiserdemo.data.Data;
 import com.horovod.android.merchandiserdemo.data.Util;
-import com.horovod.android.merchandiserdemo.showable.ShotOrientation;
 import com.horovod.android.merchandiserdemo.showable.Showable;
 import com.horovod.android.merchandiserdemo.showable.ShowableType;
 import com.squareup.picasso.Picasso;
@@ -133,28 +132,6 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                 if (imageHeight > 0) {
                     setLayoutParamsHeight(viewHolder.imageView, imageHeight);
                 }
-
-                // Плюс мелкий блок кода для установки ориентации
-                if (ShotOrientation.UNKNOWN == showable.getOrientation()) {
-                    if (bitmap == null) {
-                        bitmap = getBitmap(file);
-                    }
-                    if (bitmap != null) {
-                        int realWidth = bitmap.getWidth();
-                        int realHeight = bitmap.getHeight();
-                        if (realWidth > realHeight) {
-                            showable.setShotOrientation(ShotOrientation.HORIZONTAL);
-                        }
-                        else {
-                            showable.setShotOrientation(ShotOrientation.VERTICAL);
-                        }
-                    }
-                }
-
-                Log.i("LIST ADAPTER ||| ", "showable name = " + showable.getName());
-                Log.i("LIST ADAPTER ||| ", "showable orientation = " + showable.getOrientation());
-                Log.i("LIST ADAPTER ||| ", "previewWidth = " + showable.getPreviewWidth() + ", previewHeight = " + showable.getPreviewHeight());
-                Log.i("LIST ADAPTER ||| ", "--------------------------------");
             }
             else {
                 setLayoutParamsHeight(viewHolder.imageView, 0);
@@ -174,9 +151,14 @@ public class ListShowableAdapter extends ArrayAdapter<Showable> {
                     myContext.sendBroadcast(intent);
                 }
                 else if (ShowableType.SHOT == showable.getShowableType() && showable.getIdNumber() > 0) {
-                    Intent intent = new Intent(Data.INTENT_SHOW_PHOTO);
+                    /*Intent intent = new Intent(Data.INTENT_SHOW_PHOTO);
                     intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
-                    myContext.sendBroadcast(intent);
+                    myContext.sendBroadcast(intent);*/
+                    Intent intent = new Intent(myContext, ShotActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+                    intent.putExtra(Data.KEY_IDNUMBER, showable.getIdNumber());
+                    myContext.startActivity(intent);
+
                 }
 
             }

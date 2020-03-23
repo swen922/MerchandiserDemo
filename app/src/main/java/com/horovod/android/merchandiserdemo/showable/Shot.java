@@ -17,7 +17,6 @@ public class Shot implements Showable {
     private int previewWidth = -1;
     private int previewHeight = -1;
     private boolean isVisible = true;
-    private ShotOrientation myOrientation = ShotOrientation.UNKNOWN;
     private String name = "";
     private String comment = "";
     private List<Classifier> classifiers = new ArrayList<>();
@@ -95,19 +94,10 @@ public class Shot implements Showable {
         this.isVisible = show;
     }
 
-    @Override
-    public ShotOrientation getOrientation() {
-        return this.myOrientation;
-    }
 
     @Override
     public void setPreviewWidth(int width) {
         this.previewWidth = width;
-    }
-
-    @Override
-    public void setShotOrientation(ShotOrientation orientation) {
-        this.myOrientation = orientation;
     }
 
     @Override

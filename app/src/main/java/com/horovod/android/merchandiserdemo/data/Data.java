@@ -31,7 +31,7 @@ public class Data {
     public static int maxLengthCommentList = -1;
     public static int minLength = 28;
 
-    public static ShotFragment shotFragment = null;
+    //public static ShotFragment shotFragment = null;
 
 
     /** REAL APP - В реальном приложении не нужно */

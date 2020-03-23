@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private WindowManager myWindowManager;
 
     private BroadcastReceiver changeShowableReceiver;
-    private BroadcastReceiver photoFragmentReceiver;
+    //private BroadcastReceiver photoFragmentReceiver;
 
 
     @Override
@@ -122,7 +122,7 @@ public class MainActivity extends AppCompatActivity {
             };
         }
 
-        if (photoFragmentReceiver == null) {
+        /*if (photoFragmentReceiver == null) {
             photoFragmentReceiver = new BroadcastReceiver() {
                 @Override
                 public void onReceive(Context context, Intent intent) {
@@ -143,12 +143,12 @@ public class MainActivity extends AppCompatActivity {
                     }
                 }
             };
-        }
+        }*/
 
         IntentFilter changeShowableFilter = new IntentFilter(Data.INTENT_REPLACE_SHOWABLE);
         registerReceiver(changeShowableReceiver, changeShowableFilter);
-        IntentFilter photoFragmentFilter = new IntentFilter(Data.INTENT_SHOW_PHOTO);
-        registerReceiver(photoFragmentReceiver, photoFragmentFilter);
+        /*IntentFilter photoFragmentFilter = new IntentFilter(Data.INTENT_SHOW_PHOTO);
+        registerReceiver(photoFragmentReceiver, photoFragmentFilter);*/
 
     }
 
@@ -156,17 +156,17 @@ public class MainActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         unregisterReceiver(changeShowableReceiver);
-        unregisterReceiver(photoFragmentReceiver);
+        //unregisterReceiver(photoFragmentReceiver);
     }
 
     @Override
     public void onBackPressed() {
         //super.onBackPressed();
-        if (Data.shotFragment != null) {
+        /*if (Data.shotFragment != null) {
             myFragmentManager.beginTransaction().remove(Data.shotFragment).commit();
             Data.shotFragment = null;
-        }
-        else if (ShowableType.STORE_KEEPER != parent.getShowableType()) {
+        }*/
+        if (ShowableType.STORE_KEEPER != parent.getShowableType()) {
             Showable newParent = parent.getParent();
             changeParent(newParent);
             handleBackArrow();

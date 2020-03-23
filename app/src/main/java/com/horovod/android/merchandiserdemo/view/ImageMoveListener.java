@@ -1,9 +1,11 @@
 package com.horovod.android.merchandiserdemo.view;
 
+import android.content.Context;
 import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
+import android.widget.Scroller;
 
 public class ImageMoveListener implements View.OnTouchListener {
 

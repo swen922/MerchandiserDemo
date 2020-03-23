@@ -93,16 +93,6 @@ public class StoreKeeper implements Showable {
     }
 
     @Override
-    public ShotOrientation getOrientation() {
-        return null;
-    }
-
-    @Override
-    public void setShotOrientation(ShotOrientation orientation) {
-
-    }
-
-    @Override
     public String getName() {
         return this.name;
     }

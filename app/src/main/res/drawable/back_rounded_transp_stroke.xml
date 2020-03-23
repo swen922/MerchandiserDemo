@@ -4,7 +4,7 @@
     >
 
     <solid
-        android:color="@color/gray_1_10pc"
+        android:color="@color/gray_3"
         />
 
     <stroke
