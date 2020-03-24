@@ -154,7 +154,7 @@ public class Shot implements Showable {
 
     @Override
     public void addClassifier(Classifier classifier) {
-        if (classifier != null && !this.classifiers.contains(classifier)) {
+        if (!hasEqualClassifier(classifier)) {
             this.classifiers.add(classifier);
         }
     }
@@ -224,6 +224,15 @@ public class Shot implements Showable {
         StringBuilder sb = new StringBuilder("Showable ");
         sb.append(this.name).append(", id = ").append(this.idNumber);
         return sb.toString();
+    }
+
+    private boolean hasEqualClassifier(Classifier classifier) {
+        for (Classifier cl : classifiers) {
+            if (cl.equals(classifier)) {
+                return true;
+            }
+        }
+        return false;
     }
 
 

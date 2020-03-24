@@ -280,6 +280,8 @@ public class MainActivity extends AppCompatActivity {
 
         Classifier clStep0 = new ClassifierStep("0");
         Classifier clStep1 = new ClassifierStep("1");
+        Classifier clStep2 = new ClassifierStep("2");
+        Classifier clStep3 = new ClassifierStep("3");
 
         Classifier clBrandRossia = new ClassifierBrand("Rossia");
         clBrandRossia.setComment("Россия - щедрая душа");
@@ -296,22 +298,24 @@ public class MainActivity extends AppCompatActivity {
         Classifier clBranPurina = new ClassifierBrand("Purina");
         clBranPurina.setComment("Пурина");
 
-        Showable st1_shot1 = Shot.getInstance(store1, "Общий вид магазина");
+        Showable st1_shot1 = Shot.getInstance(store1, "Общий вид магазина в Шаге-0");
         st1_shot1.setPreview("shop_trad_1_step0_a_preview.jpg");
         st1_shot1.setImage("shop_trad_1_step0_a.jpg");
         st1_shot1.addClassifier(clStep0);
 
-        Showable st1_shot2 = Shot.getInstance(store1, "Общий вид всех выкладок");
+        Showable st1_shot2 = Shot.getInstance(store1, "Общий вид всех выкладок в Шаге-0");
         st1_shot2.setPreview("shop_trad_1_step0_b_preview.jpg");
         st1_shot2.setImage("shop_trad_1_step0_b.jpg");
+        st1_shot2.setComment("Размещение шоколадных батончиков – в витрине или на полке в UMD максимально близко (не более 1 м) к месту расчета. Сахаристые БОН ПАРИ размещаются: на полке, на хуках или в витрине, в пределах 1 м от кассового узла. Если блистеров НЕСКВИК " +
+                "и МАГГИ нет в наличии – необходимо размещать на кассовом кубе «живой» продукт.");
         st1_shot2.addClassifier(clStep0);
 
-        Showable st1_shot3 = Shot.getInstance(store1, "Все POPM");
+        Showable st1_shot3 = Shot.getInstance(store1, "POPM для всех Шагов");
         st1_shot3.setPreview("shop_trad_1_step0_popm_1_preview.jpg");
         st1_shot3.setImage("shop_trad_1_step0_popm_1.jpg");
         st1_shot3.addClassifier(clStep0);
 
-        Showable st1_shot4 = Shot.getInstance(store1, "Планограмма батончиков");
+        Showable st1_shot4 = Shot.getInstance(store1, "Планограмма батончиков в Шаге-0");
         st1_shot4.setComment("Бледно окрашенные SKU не обязательны для размещения на данном Шаге. Показан принцип рекомендованной выкладки в случае расширения ассортимента (витрина, UMD).");
         st1_shot4.setPreview("shop_trad_1_step0_plangr_sticks.jpg");
         st1_shot4.setImage("shop_trad_1_step0_plangr_sticks.jpg");
@@ -327,23 +331,61 @@ public class MainActivity extends AppCompatActivity {
         st1_shot5.addClassifier(clStep0);
         st1_shot5.addClassifier(clBrandNescafe);
 
-        Showable st1_shot6 = Shot.getInstance(store1, "Общий вид магазина");
+        Showable st1_shot6 = Shot.getInstance(store1, "Общий вид магазина в Шаге-1");
         st1_shot6.setPreview("shop_trad_1_step1_a_preview.jpg");
         st1_shot6.setImage("shop_trad_1_step1_a.jpg");
         st1_shot6.addClassifier(clStep1);
 
-        Showable st1_shot7 = Shot.getInstance(store1, "Общий вид всех выкладок");
+        Showable st1_shot7 = Shot.getInstance(store1, "Общий вид всех выкладок в Шаге-1");
         st1_shot7.setPreview("shop_trad_1_step1_b_preview.jpg");
         st1_shot7.setImage("shop_trad_1_step1_b.jpg");
         st1_shot7.addClassifier(clStep1);
 
-        Showable st1_shot8 = Shot.getInstance(store1, "Планограмма Магги в дисплеях");
+        Showable st1_shot8 = Shot.getInstance(store1, "Планограмма Магги в дисплеях в Шаге-1");
         st1_shot8.setPreview("shop_trad_1_step1_g_preview.jpg");
         st1_shot8.setImage("shop_trad_1_step1_g.jpg");
+        st1_shot8.setComment(" Размещение МАГГИ на стене осуществляется в настенном оборудовании.\nРазмещение на полке – в наполочном дисплее или в шелф-реди боксах.");
         st1_shot8.addClassifier(clStep1);
         st1_shot8.addClassifier(clBranMaggi);
 
+        Showable st1_shot9 = Shot.getInstance(store1, "Планограмма Пурина в Шаге-1");
+        st1_shot9.setPreview("shop_trad_1_step1_i_preview.jpg");
+        st1_shot9.setImage("shop_trad_1_step1_i.jpg");
+        st1_shot9.addClassifier(clStep1);
+        st1_shot9.addClassifier(clBranPurina);
 
+        Showable st1_shot10 = Shot.getInstance(store1, "Планограмма шоколадных плиток в Шаге-1");
+        st1_shot10.setPreview("shop_trad_1_step1_plangr_tablet_preview.jpg");
+        st1_shot10.setImage("shop_trad_1_step1_plangr_tablet.jpg");
+        st1_shot10.setComment("Бледно окрашенные SKU не обязательны для размещения на данном Шаге. Показан принцип рекомендованной выкладки в случае расширения ассортимента (витрина, UMD).\n" +
+                "Шоколад NESQUIK размещается вне корпоративного блока, рядом с шоколадом KINDER.");
+        st1_shot10.addClassifier(clStep1);
+        st1_shot10.addClassifier(clBrandRossia);
+        st1_shot10.addClassifier(clBrandKitKat);
+        st1_shot10.addClassifier(clBrandNesquik);
+        st1_shot10.addClassifier(clBrandNUTS);
+
+        Showable st1_shot11 = Shot.getInstance(store1, "Дополнительные POPM в Шаге-1");
+        st1_shot11.setPreview("shop_trad_1_step1_popm_1.jpg");
+        st1_shot11.setImage("shop_trad_1_step1_popm_1.jpg");
+        st1_shot11.addClassifier(clStep1);
+
+
+        Showable st1_shot12 = Shot.getInstance(store1, "Общий вид магазина в Шаге-2");
+        st1_shot12.setPreview("shop_trad_1_step2_a_preview.jpg");
+        st1_shot12.setImage("shop_trad_1_step2_a.jpg");
+        st1_shot12.addClassifier(clStep2);
+
+        Showable st1_shot13 = Shot.getInstance(store1, "Общий вид всех выкладок в Шаге-2");
+        st1_shot13.setPreview("shop_trad_1_step2_b_preview.jpg");
+        st1_shot13.setImage("shop_trad_1_step2_b.jpg");
+        st1_shot13.addClassifier(clStep2);
+
+        Showable st1_shot14 = Shot.getInstance(store1, "Вид отдельных выкладок в Шаге-2");
+        st1_shot14.setPreview("shop_trad_1_step2_c_preview.jpg");
+        st1_shot14.setImage("shop_trad_1_step2_c.jpg");
+        st1_shot14.setComment("Если в магазине нет витрины для весовых конфет, то продукция размещается в UMD для весовых конфет.");
+        st1_shot14.addClassifier(clStep2);
 
 
 

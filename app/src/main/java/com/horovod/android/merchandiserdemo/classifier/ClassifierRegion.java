@@ -1,5 +1,7 @@
 package com.horovod.android.merchandiserdemo.classifier;
 
+import java.util.Objects;
+
 public class ClassifierRegion implements Classifier {
 
     private String name = "";
@@ -43,6 +45,20 @@ public class ClassifierRegion implements Classifier {
         Classifier clone = new ClassifierRegion(this.name);
         clone.setComment(this.comment);
         return clone;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassifierRegion that = (ClassifierRegion) o;
+        return Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getComment(), that.getComment());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getComment());
     }
 
 }

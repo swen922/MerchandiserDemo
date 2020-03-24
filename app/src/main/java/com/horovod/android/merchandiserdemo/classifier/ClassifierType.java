@@ -30,7 +30,4 @@ public enum ClassifierType {
         String result = resources.getString(this.headerRes);
         return result;
     }
-
-
-
 }

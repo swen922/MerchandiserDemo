@@ -5,12 +5,20 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.ScaleGestureDetector;
 import android.view.View;
-import android.widget.Scroller;
+import android.view.animation.Animation;
+
+import com.horovod.android.merchandiserdemo.data.Data;
+
 
 public class ImageMoveListener implements View.OnTouchListener {
 
     private GestureDetector moveDetector;
     private View view;
+    private View nameField;
+    private View commentField;
+
+    private Animation in;
+    private Animation out;
 
     ScaleGestureDetector scaleDetector;
     float scaleFactor = 1.0f;
@@ -22,9 +30,12 @@ public class ImageMoveListener implements View.OnTouchListener {
 
     private final int SENSITIVITY = 7;
 
-
-    public ImageMoveListener(View view) {
+    public ImageMoveListener(View view, Animation inn, Animation outt, View name, View comment) {
         this.view = view;
+        this.in = inn;
+        this.out = outt;
+        this.nameField = name;
+        this.commentField = comment;
         moveDetector = new GestureDetector(view.getContext(), gListener);
         scaleDetector = new ScaleGestureDetector(view.getContext(), new ScaleListener());
     }
@@ -68,12 +79,35 @@ public class ImageMoveListener implements View.OnTouchListener {
         }
 
         @Override
+        public boolean onDoubleTap(MotionEvent e) {
+            animateAppearsView();
+            return true;
+        }
+
+        @Override
         public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
             float x = e2.getRawX();
             float y = e2.getRawY();
             view.setTranslationX( x - downX);
             view.setTranslationY(y - downY);
             return true;
+        }
+
+        private void animateAppearsView() {
+            if (Data.textVisible) {
+                nameField.startAnimation(out);
+                nameField.setVisibility(View.INVISIBLE);
+                commentField.startAnimation(out);
+                commentField.setVisibility(View.INVISIBLE);
+                Data.textVisible = false;
+            }
+            else {
+                nameField.startAnimation(in);
+                nameField.setVisibility(View.VISIBLE);
+                commentField.startAnimation(in);
+                commentField.setVisibility(View.VISIBLE);
+                Data.textVisible = true;
+            }
         }
     };
 

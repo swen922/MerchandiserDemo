@@ -14,6 +14,7 @@ public class Data {
     /** REAL APP - В реальном приложении не нужно (?) */
     private static int showableIdNumber = 1;
     private static List<Integer> existingIdShowables = new ArrayList<>();
+    public static boolean textVisible = true;
 
     //public static Showable storeKeeper;
     private static Map<Integer, Showable> keepersMap = new ConcurrentHashMap<>();
@@ -25,6 +26,9 @@ public class Data {
 
     public static final String KEY_IDNUMBER = "com.horovod.android.merchandiserdemo.KEY_IDNUMBER";
     public static final String KEY_FILE_NAME = "com.horovod.android.merchandiserdemo.KEY_FILE_NAME";
+    public static final String KEY_BOOLEAN = "com.horovod.android.merchandiserdemo.KEY_BOOLEAN";
+    public static final String KEY_SCALE_X = "com.horovod.android.merchandiserdemo.KEY_SCALE_X";
+    public static final String KEY_SCALE_Y = "com.horovod.android.merchandiserdemo.KEY_SCALE_Y";
 
 
     public static int maxLengthClassifiersMain = -1;

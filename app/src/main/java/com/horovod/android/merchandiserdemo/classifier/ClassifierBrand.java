@@ -1,5 +1,7 @@
 package com.horovod.android.merchandiserdemo.classifier;
 
+import java.util.Objects;
+
 public class ClassifierBrand implements Classifier {
 
     private String name = "";
@@ -43,5 +45,20 @@ public class ClassifierBrand implements Classifier {
         Classifier clone = new ClassifierBrand(this.name);
         clone.setComment(this.comment);
         return clone;
+    }
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        ClassifierBrand that = (ClassifierBrand) o;
+        return Objects.equals(getName(), that.getName()) &&
+                Objects.equals(getComment(), that.getComment());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getName(), getComment());
     }
 }

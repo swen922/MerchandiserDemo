@@ -61,7 +61,7 @@ public class ShotFragment extends Fragment {
         commentTextView = rootView.findViewById(R.id.shot_frag_comment);
         buttonScale = rootView.findViewById(R.id.shot_frag_button_scale);
         buttonClose = rootView.findViewById(R.id.shot_frag_button_close);
-        imageMoveListener = new ImageMoveListener(imageView);
+        //imageMoveListener = new ImageMoveListener(imageView);
         imageView.setOnTouchListener(imageMoveListener);
 
         Bundle args = getArguments();
